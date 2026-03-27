@@ -1,0 +1,30 @@
+# Byte-compiled / optimised Python files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Trained model artefacts
+models/
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Test / coverage reports
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE
+.idea/
+.vscode/
+*.swp
