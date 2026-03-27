@@ -1,0 +1,66 @@
+{
+    "model_info": {
+        "model_name": "RandomForest",
+        "model_type": "RandomForestClassifier",
+        "version": "1.0",
+        "created_date": "2026-01-27 14:39:43",
+        "team": "Makalu"
+    },
+    "performance_metrics": {
+        "accuracy": 0.875,
+        "precision": 0.875037503750375,
+        "recall": 0.875,
+        "f1_score": 0.8749968749218731,
+        "auc": 0.9520000000000001
+    },
+    "training_data": {
+        "source": "final_cleaned_data.csv",
+        "total_samples": 1000,
+        "train_samples": 800,
+        "test_samples": 200,
+        "features_count": 20
+    },
+    "hyperparameters": {
+        "bootstrap": false,
+        "ccp_alpha": 0.0,
+        "class_weight": "balanced_subsample",
+        "criterion": "entropy",
+        "max_depth": null,
+        "max_features": "sqrt",
+        "max_leaf_nodes": null,
+        "max_samples": null,
+        "min_impurity_decrease": 0.0,
+        "min_samples_leaf": 1,
+        "min_samples_split": 2,
+        "min_weight_fraction_leaf": 0.0,
+        "monotonic_cst": null,
+        "n_estimators": 500,
+        "n_jobs": null,
+        "oob_score": false,
+        "random_state": 42,
+        "verbose": 0,
+        "warm_start": false
+    },
+    "features": [
+        "Age",
+        "Height_cm",
+        "Weight_kg",
+        "BMI",
+        "Systolic_BP",
+        "Diastolic_BP",
+        "Heart_Rate",
+        "Temperature_F",
+        "Blood_Sugar",
+        "Cholesterol",
+        "Hemoglobin",
+        "Exercise_Hours_Week",
+        "Hospital_Visits_Year",
+        "Gender_encoded",
+        "Smoking_encoded",
+        "Alcohol_Consumption_encoded",
+        "Diabetes_encoded",
+        "Hypertension_encoded",
+        "Heart_Disease_encoded",
+        "Insurance_Type_encoded"
+    ]
+}

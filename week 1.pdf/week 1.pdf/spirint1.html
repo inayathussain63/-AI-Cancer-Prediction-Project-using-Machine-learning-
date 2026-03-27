@@ -1,0 +1,2751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XPro AI Sprint 1 - Cancer Prediction Project Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 30px rgba(0,0,0,0.2);
+        }
+        
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        nav {
+            background: #2c3e50;
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        
+        nav a:hover {
+            background: #34495e;
+        }
+        
+        .content {
+            padding: 2rem;
+        }
+        
+        section {
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+        }
+        
+        h2 {
+            color: #2c3e50;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        h3 {
+            color: #34495e;
+            font-size: 1.5rem;
+            margin: 1.5rem 0 1rem 0;
+        }
+        
+        h4 {
+            color: #555;
+            font-size: 1.2rem;
+            margin: 1rem 0 0.5rem 0;
+        }
+        
+        .card {
+            background: white;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .highlight {
+            background: #fff3cd;
+            padding: 1rem;
+            border-left: 4px solid #ffc107;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        
+        .important {
+            background: #f8d7da;
+            padding: 1rem;
+            border-left: 4px solid #dc3545;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        
+        .success {
+            background: #d4edda;
+            padding: 1rem;
+            border-left: 4px solid #28a745;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        
+        code {
+            background: #f4f4f4;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #e83e8c;
+        }
+        
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+        }
+        
+        ul, ol {
+            margin-left: 2rem;
+            margin-top: 0.5rem;
+        }
+        
+        li {
+            margin: 0.5rem 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: white;
+        }
+        
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        
+        th {
+            background: #667eea;
+            color: white;
+        }
+        
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding: 1rem 0 1rem 2rem;
+            border-left: 3px solid #667eea;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 1.5rem;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #667eea;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+            margin: 0.5rem 0.5rem 0.5rem 0;
+        }
+        
+        .btn:hover {
+            background: #5568d3;
+        }
+        
+        footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+            
+            nav ul {
+                flex-direction: column;
+            }
+            
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏥 XPro AI Cancer Prediction Project</h1>
+            <p>Sprint 1: Data Readiness - Complete Learning Guide</p>
+            <p style="font-size: 0.9rem; margin-top: 1rem;">by Apps Emplife</p>
+        </header>
+        
+        <nav>
+            <ul>
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#basics">ML Basics</a></li>
+                <li><a href="#goals">Sprint Goals</a></li>
+                <li><a href="#week1">Week 1</a></li>
+                <li><a href="#week2">Week 2</a></li>
+                <li><a href="#eda">EDA</a></li>
+                <li><a href="#class-imbalance">Class Imbalance</a></li>
+                <li><a href="#validation-checklist">Validation</a></li>
+                <li><a href="#deliverables">Deliverables</a></li>
+                <li><a href="#resources">Resources</a></li>
+                <li><a href="#quiz">Quiz</a></li>
+            </ul>
+        </nav>
+        
+        <div class="content">
+            <section id="overview">
+                <h2>📋 Project Overview</h2>
+                
+                <div class="highlight">
+                    <strong>What are we building?</strong>
+                    <p>We're developing a Machine Learning model that can predict the presence of cancer using clinical patient data. This project simulates a real-world AI development cycle used in healthcare.</p>
+                </div>
+                
+                <div class="card-grid">
+                    <div class="card">
+                        <h3>🎯 Objective</h3>
+                        <p>Develop a robust ML model that predicts cancer presence using clinical data</p>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>🎓 Context</h3>
+                        <p>Simulate a full AI project cycle to understand real-world ML development</p>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>👥 Your Role</h3>
+                        <p>Collaborate in various roles: Data Scientist, ML Engineer, Project Manager</p>
+                    </div>
+                </div>
+                
+                <h3>Key Stakeholders</h3>
+                <ul>
+                    <li><strong>Project Manager:</strong> Oversees timeline, scope, and deliverables</li>
+                    <li><strong>Data Scientist:</strong> Analyzes data, builds models, evaluates performance</li>
+                    <li><strong>ML Engineer:</strong> Implements and optimizes ML solutions</li>
+                    <li><strong>Documentation Specialist:</strong> Creates technical documentation</li>
+                </ul>
+            </section>
+            
+            <section id="basics">
+                <h2>🧠 Machine Learning Basics (Start Here!)</h2>
+                
+                <h3>What is Machine Learning?</h3>
+                <p>Machine Learning is a branch of artificial intelligence where computers learn patterns from data without being explicitly programmed. Instead of writing specific rules, we feed the computer examples, and it learns to make predictions.</p>
+                
+                <div class="card">
+                    <h4>Real-World Analogy:</h4>
+                    <p>Think of teaching a child to identify fruits:</p>
+                    <ul>
+                        <li><strong>Traditional Programming:</strong> Give exact rules (red + round + small = cherry)</li>
+                        <li><strong>Machine Learning:</strong> Show 1000 pictures of fruits with labels, and the child learns patterns automatically</li>
+                    </ul>
+                </div>
+                
+                <h3>Types of Machine Learning</h3>
+                
+                <div class="card-grid">
+                    <div class="card">
+                        <h4>Supervised Learning</h4>
+                        <p>Learning from labeled data (what we're doing!)</p>
+                        <p><strong>Example:</strong> Predicting cancer (Yes/No) based on patient data with known outcomes</p>
+                    </div>
+                    
+                    <div class="card">
+                        <h4>Unsupervised Learning</h4>
+                        <p>Finding patterns in unlabeled data</p>
+                        <p><strong>Example:</strong> Grouping patients into similar clusters</p>
+                    </div>
+                    
+                    <div class="card">
+                        <h4>Reinforcement Learning</h4>
+                        <p>Learning through trial and error</p>
+                        <p><strong>Example:</strong> Teaching a robot to walk</p>
+                    </div>
+                </div>
+                
+                <h3>Key ML Terminology</h3>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Term</th>
+                            <th>Definition</th>
+                            <th>Example</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Dataset</strong></td>
+                            <td>Collection of data used for training</td>
+                            <td>1000 patient records</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Features</strong></td>
+                            <td>Input variables (columns) used for prediction</td>
+                            <td>Age, blood pressure, cholesterol</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Label/Target</strong></td>
+                            <td>Output variable we want to predict</td>
+                            <td>Cancer: Yes or No</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Training</strong></td>
+                            <td>Teaching the model using data</td>
+                            <td>Showing 800 patient records to learn</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Testing</strong></td>
+                            <td>Evaluating model on unseen data</td>
+                            <td>Testing on remaining 200 records</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Model</strong></td>
+                            <td>The trained algorithm that makes predictions</td>
+                            <td>Our cancer prediction system</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3>The Machine Learning Pipeline</h3>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <h4>1. Data Collection</h4>
+                        <p>Gather relevant data from various sources</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>2. Data Cleaning</h4>
+                        <p>Remove errors, handle missing values, fix inconsistencies</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>3. Data Exploration</h4>
+                        <p>Analyze patterns, visualize data, understand relationships</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>4. Feature Engineering</h4>
+                        <p>Select and transform features for better model performance</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>5. Model Training</h4>
+                        <p>Train various algorithms on the prepared data</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>6. Model Evaluation</h4>
+                        <p>Test model performance using metrics</p>
+                    </div>
+                    <div class="timeline-item">
+                        <h4>7. Model Deployment</h4>
+                        <p>Deploy the model to production for real-world use</p>
+                    </div>
+                </div>
+                
+                <div class="success">
+                    <strong>Sprint 1 Focus:</strong> We'll be working on steps 1-3 (Data Collection, Cleaning, and Exploration) - the foundation of any ML project!
+                </div>
+            </section>
+            
+            <section id="goals">
+                <h2>🎯 Sprint 1: Data Readiness Goals</h2>
+                
+                <p>Sprint 1 lasts 2 weeks and focuses on building a solid data foundation. Without quality data, even the best ML algorithms will fail!</p>
+                
+                <div class="card-grid">
+                    <div class="card">
+                        <h3>🔢 Generate Synthetic Data</h3>
+                        <p>Create 1000 realistic patient records for model development</p>
+                        <p><strong>Why synthetic?</strong> Real patient data is protected by privacy laws (HIPAA). Synthetic data mimics real patterns without privacy concerns.</p>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>🧹 Introduce and Clean Anomalies</h3>
+                        <p>Add realistic data problems (nulls, outliers, duplicates) then fix them</p>
+                        <p><strong>Why?</strong> Real-world data is messy! This teaches you to handle common data quality issues.</p>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>📄 Draft System Requirement Specification (SRS)</h3>
+                        <p>Define clear technical requirements for the entire system</p>
+                        <p><strong>Why?</strong> Documentation ensures everyone understands what to build and how.</p>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>📊 Document Project Essentials</h3>
+                        <p>Establish project charter, scope, roles, and timeline</p>
+                        <p><strong>Why?</strong> Professional projects need clear planning and organization.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="week1">
+                <h2>📅 Week 1: Data Generation</h2>
+                
+                <h3>Story: Generate Synthetic Patient Data</h3>
+                
+                <div class="important">
+                    <strong>Learning Objectives:</strong>
+                    <ul>
+                        <li>Understand how to create synthetic datasets</li>
+                        <li>Learn NumPy and Pandas libraries</li>
+                        <li>Introduce realistic data anomalies</li>
+                        <li>Practice Python programming for data science</li>
+                    </ul>
+                </div>
+                
+                <h3>Tasks Breakdown</h3>
+                
+                <div class="card">
+                    <h4>Task 1: Generate 1000 Patient Records</h4>
+                    <p>Using NumPy and Pandas, create a dataset with the following features:</p>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Feature Name</th>
+                                <th>Data Type</th>
+                                <th>Range/Values</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Patient_ID</td>
+                                <td>Integer</td>
+                                <td>1001-2000</td>
+                                <td>Unique identifier</td>
+                            </tr>
+                            <tr>
+                                <td>Age</td>
+                                <td>Integer</td>
+                                <td>18-90</td>
+                                <td>Patient age in years</td>
+                            </tr>
+                            <tr>
+                                <td>Gender</td>
+                                <td>Categorical</td>
+                                <td>Male/Female</td>
+                                <td>Patient gender</td>
+                            </tr>
+                            <tr>
+                                <td>Blood_Pressure</td>
+                                <td>Float</td>
+                                <td>90-200</td>
+                                <td>Systolic BP in mmHg</td>
+                            </tr>
+                            <tr>
+                                <td>Cholesterol</td>
+                                <td>Float</td>
+                                <td>150-300</td>
+                                <td>Total cholesterol mg/dL</td>
+                            </tr>
+                            <tr>
+                                <td>BMI</td>
+                                <td>Float</td>
+                                <td>15-45</td>
+                                <td>Body Mass Index</td>
+                            </tr>
+                            <tr>
+                                <td>Smoking</td>
+                                <td>Categorical</td>
+                                <td>Yes/No</td>
+                                <td>Smoking status</td>
+                            </tr>
+                            <tr>
+                                <td>Family_History</td>
+                                <td>Categorical</td>
+                                <td>Yes/No</td>
+                                <td>Family history of cancer</td>
+                            </tr>
+                            <tr>
+                                <td>Cancer</td>
+                                <td>Binary</td>
+                                <td>0/1</td>
+                                <td>Target: Cancer present (1) or not (0)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h4>Sample Python Code:</h4>
+                    <pre><code>import numpy as np
+import pandas as pd
+
+# Set random seed for reproducibility
+np.random.seed(42)
+
+# Number of records
+n = 1000
+
+# Generate synthetic data
+data = {
+    'Patient_ID': range(1001, 1001 + n),
+    'Age': np.random.randint(18, 91, n),
+    'Gender': np.random.choice(['Male', 'Female'], n),
+    'Blood_Pressure': np.random.uniform(90, 200, n).round(1),
+    'Cholesterol': np.random.uniform(150, 300, n).round(1),
+    'BMI': np.random.uniform(15, 45, n).round(1),
+    'Smoking': np.random.choice(['Yes', 'No'], n),
+    'Family_History': np.random.choice(['Yes', 'No'], n),
+    'Cancer': np.random.choice([0, 1], n, p=[0.7, 0.3])  # 30% have cancer
+}
+
+# Create DataFrame
+df = pd.DataFrame(data)
+
+# Display first few rows
+print(df.head())
+print(f"\nDataset shape: {df.shape}")
+</code></pre>
+                </div>
+                
+                <div class="card">
+                    <h4>Task 2: Introduce Realistic Anomalies</h4>
+                    <p>Real-world data is never perfect. Introduce these common issues:</p>
+                    
+                    <h4>Types of Anomalies to Add:</h4>
+                    
+                    <ol>
+                        <li>
+                            <strong>Missing Values (Nulls):</strong>
+                            <ul>
+                                <li>Randomly set 5% of Cholesterol values to NaN</li>
+                                <li>Randomly set 3% of BMI values to NaN</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <strong>Duplicate Records:</strong>
+                            <ul>
+                                <li>Duplicate 20 random rows completely</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <strong>Outliers:</strong>
+                            <ul>
+                                <li>Set 10 Blood_Pressure values to extremely high (250-300)</li>
+                                <li>Set 10 BMI values to unrealistic (60-80)</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <strong>Incorrect Formats:</strong>
+                            <ul>
+                                <li>Change some Gender values to lowercase or abbreviations</li>
+                                <li>Add extra spaces to some text fields</li>
+                            </ul>
+                        </li>
+                    </ol>
+                    
+                    <h4>Sample Code for Introducing Anomalies:</h4>
+                    <pre><code># 1. Introduce missing values
+missing_indices_chol = np.random.choice(df.index, size=int(0.05 * n), replace=False)
+df.loc[missing_indices_chol, 'Cholesterol'] = np.nan
+
+missing_indices_bmi = np.random.choice(df.index, size=int(0.03 * n), replace=False)
+df.loc[missing_indices_bmi, 'BMI'] = np.nan
+
+# 2. Introduce duplicates
+duplicate_indices = np.random.choice(df.index, size=20, replace=False)
+duplicates = df.loc[duplicate_indices].copy()
+df = pd.concat([df, duplicates], ignore_index=True)
+
+# 3. Introduce outliers
+outlier_indices_bp = np.random.choice(df.index, size=10, replace=False)
+df.loc[outlier_indices_bp, 'Blood_Pressure'] = np.random.uniform(250, 300, 10)
+
+outlier_indices_bmi = np.random.choice(df.index, size=10, replace=False)
+df.loc[outlier_indices_bmi, 'BMI'] = np.random.uniform(60, 80, 10)
+
+# 4. Introduce format inconsistencies
+format_indices = np.random.choice(df.index, size=20, replace=False)
+df.loc[format_indices, 'Gender'] = df.loc[format_indices, 'Gender'].str.lower()
+
+# Save the "dirty" dataset
+df.to_excel('AI_TeamName_DirtyDataset.xlsx', index=False)
+print("Dirty dataset created with anomalies!")
+</code></pre>
+                </div>
+                
+                <h3>Week 1 Deliverables</h3>
+                <div class="success">
+                    <ul>
+                        <li>✅ <strong>AI_&lt;TeamName&gt;_DataPrepCode.py</strong> - Python script for data generation</li>
+                        <li>✅ <strong>AI_&lt;TeamName&gt;_DirtyDataset.xlsx</strong> - Dataset with introduced anomalies</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <section id="week2">
+                <h2>📅 Week 2: Data Cleaning & Documentation</h2>
+                
+                <h3>Story 1: Data Cleaning and Validation</h3>
+                
+                <div class="important">
+                    <strong>Learning Objectives:</strong>
+                    <ul>
+                        <li>Master data cleaning techniques</li>
+                        <li>Understand statistical methods for outlier detection</li>
+                        <li>Learn data validation procedures</li>
+                        <li>Prepare data for machine learning</li>
+                    </ul>
+                </div>
+                
+                <h3>Tasks Breakdown</h3>
+                
+                <div class="card">
+                    <h4>Task 3: Clean Data Using Statistical Methods</h4>
+                    
+                    <h4>1. Handle Missing Values</h4>
+                    <p>Three main strategies:</p>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Method</th>
+                                <th>When to Use</th>
+                                <th>Implementation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Mean Imputation</strong></td>
+                                <td>Numerical data, normally distributed</td>
+                                <td>Replace nulls with column average</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Median Imputation</strong></td>
+                                <td>Numerical data with outliers</td>
+                                <td>Replace nulls with column median</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Mode Imputation</strong></td>
+                                <td>Categorical data</td>
+                                <td>Replace nulls with most common value</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <pre><code># Handle missing values
+# For numerical columns (Cholesterol, BMI)
+df['Cholesterol'].fillna(df['Cholesterol'].median(), inplace=True)
+df['BMI'].fillna(df['BMI'].median(), inplace=True)
+
+# Check for any remaining nulls
+print("Missing values after imputation:")
+print(df.isnull().sum())
+</code></pre>
+                    
+                    <h4>2. Remove Duplicates</h4>
+                    <pre><code># Remove duplicate rows
+print(f"Shape before removing duplicates: {df.shape}")
+df = df.drop_duplicates()
+print(f"Shape after removing duplicates: {df.shape}")
+</code></pre>
+                    
+                    <h4>3. Detect and Handle Outliers</h4>
+                    
+                    <p><strong>Method 1: IQR (Interquartile Range) Method</strong></p>
+                    <div class="highlight">
+                        <p><strong>What is IQR?</strong></p>
+                        <ul>
+                            <li>Q1 (First Quartile): 25% of data is below this value</li>
+                            <li>Q3 (Third Quartile): 75% of data is below this value</li>
+                            <li>IQR = Q3 - Q1</li>
+                            <li>Outliers: Values below Q1 - 1.5×IQR or above Q3 + 1.5×IQR</li>
+                        </ul>
+                    </div>
+                    
+                    <pre><code>def remove_outliers_iqr(df, column):
+    Q1 = df[column].quantile(0.25)
+    Q3 = df[column].quantile(0.75)
+    IQR = Q3 - Q1
+    
+    lower_bound = Q1 - 1.5 * IQR
+    upper_bound = Q3 + 1.5 * IQR
+    
+    # Filter outliers
+    outliers = df[(df[column] < lower_bound) | (df[column] > upper_bound)]
+    print(f"Found {len(outliers)} outliers in {column}")
+    
+    # Remove outliers
+    df_clean = df[(df[column] >= lower_bound) & (df[column] <= upper_bound)]
+    return df_clean
+
+# Apply to numerical columns
+df = remove_outliers_iqr(df, 'Blood_Pressure')
+df = remove_outliers_iqr(df, 'Cholesterol')
+df = remove_outliers_iqr(df, 'BMI')
+</code></pre>
+                    
+                    <p><strong>Method 2: Z-Score Method</strong></p>
+                    <div class="highlight">
+                        <p><strong>What is Z-Score?</strong></p>
+                        <p>Measures how many standard deviations a value is from the mean. Values with |Z-Score| > 3 are typically considered outliers.</p>
+                    </div>
+                    
+                    <pre><code>from scipy import stats
+
+def remove_outliers_zscore(df, column, threshold=3):
+    z_scores = np.abs(stats.zscore(df[column]))
+    outliers = df[z_scores > threshold]
+    print(f"Found {len(outliers)} outliers in {column} using Z-score")
+    
+    df_clean = df[z_scores <= threshold]
+    return df_clean
+
+# Alternative outlier removal method
+# df = remove_outliers_zscore(df, 'Blood_Pressure')
+</code></pre>
+                    
+                    <h4>4. Fix Format Inconsistencies</h4>
+                    <pre><code># Standardize text data
+df['Gender'] = df['Gender'].str.strip().str.title()  # Remove spaces and capitalize
+df['Smoking'] = df['Smoking'].str.strip().str.title()
+df['Family_History'] = df['Family_History'].str.strip().str.title()
+
+# Verify unique values
+print("Unique Gender values:", df['Gender'].unique())
+print("Unique Smoking values:", df['Smoking'].unique())
+</code></pre>
+                </div>
+                
+                <div class="card">
+                    <h4>Task 4: Validate the Cleaned Dataset</h4>
+                    
+                    <p>Validation ensures your data is ready for machine learning:</p>
+                    
+                    <pre><code># Data Validation Checklist
+
+# 1. Check for missing values
+print("=== Missing Values ===")
+print(df.isnull().sum())
+
+# 2. Check data types
+print("\n=== Data Types ===")
+print(df.dtypes)
+
+# 3. Check value ranges
+print("\n=== Numerical Summary ===")
+print(df.describe())
+
+# 4. Check categorical values
+print("\n=== Categorical Values ===")
+print("Gender:", df['Gender'].value_counts())
+print("Smoking:", df['Smoking'].value_counts())
+print("Cancer:", df['Cancer'].value_counts())
+
+# 5. Check for duplicates
+print(f"\nDuplicate rows: {df.duplicated().sum()}")
+
+# 6. Validate ranges
+def validate_ranges(df):
+    issues = []
+    
+    if (df['Age'] < 18).any() or (df['Age'] > 90).any():
+        issues.append("Age out of range")
+    
+    if (df['Blood_Pressure'] < 90).any() or (df['Blood_Pressure'] > 200).any():
+        issues.append("Blood Pressure out of expected range")
+    
+    if (df['Cholesterol'] < 150).any() or (df['Cholesterol'] > 300).any():
+        issues.append("Cholesterol out of expected range")
+    
+    if (df['BMI'] < 15).any() or (df['BMI'] > 45).any():
+        issues.append("BMI out of expected range")
+    
+    if len(issues) == 0:
+        print("\n✅ All values within expected ranges!")
+    else:
+        print("\n⚠️ Issues found:")
+        for issue in issues:
+            print(f"  - {issue}")
+
+validate_ranges(df)
+
+# 7. Final dataset info
+print(f"\n=== Final Dataset Info ===")
+print(f"Total rows: {len(df)}")
+print(f"Total columns: {len(df.columns)}")
+print(f"Memory usage: {df.memory_usage(deep=True).sum() / 1024**2:.2f} MB")
+</code></pre>
+                    
+                    <h4>Save the Cleaned Dataset:</h4>
+                    <pre><code># Save to Excel
+df.to_excel('AI_<TeamName>_CleanedDataset.xlsx', index=False)
+print("\n✅ Cleaned dataset saved successfully!")
+
+# Also save as CSV for easier reading
+df.to_csv('AI_<TeamName>_CleanedDataset.csv', index=False)
+</code></pre>
+                </div>
+                
+                <h3>Story 2: System Requirement Specification (SRS)</h3>
+                
+                <div class="card">
+                    <h4>Task 5: Create the SRS Document</h4>
+                    
+                    <p>The SRS document defines what the system should do and how it should work. It's a blueprint for the entire project.</p>
+                    
+                    <h4>SRS Document Structure:</h4>
+                    
+                    <ol>
+                        <li>
+                            <strong>Introduction</strong>
+                            <ul>
+                                <li>Purpose of the document</li>
+                                <li>Scope of the project</li>
+                                <li>Definitions and acronyms</li>
+                                <li>References</li>
+                            </ul>
+                        </li>
+                        
+                        <li>
+                            <strong>Overall Description</strong>
+                            <ul>
+                                <li>Product perspective</li>
+                                <li>Product functions</li>
+                                <li>User characteristics</li>
+                                <li>Constraints</li>
+                                <li>Assumptions and dependencies</li>
+                            </ul>
+                        </li>
+                        
+                        <li>
+                            <strong>System Features</strong>
+                            <ul>
+                                <li>Data preprocessing requirements</li>
+                                <li>Feature engineering specifications</li>
+                                <li>Model training requirements</li>
+                                <li>Model evaluation criteria</li>
+                            </ul>
+                        </li>
+                        
+                        <li>
+                            <strong>Data Requirements</strong>
+                            <ul>
+                                <li>Data sources</li>
+                                <li>Data format specifications</li>
+                                <li>Data volume requirements</li>
+                                <li>Data quality standards</li>
+                            </ul>
+                        </li>
+                        
+                        <li>
+                            <strong>Functional Requirements</strong>
+                            <ul>
+                                <li>FR1: System shall handle missing values using median imputation</li>
+                                <li>FR2: System shall detect outliers using IQR method</li>
+                                <li>FR3: System shall remove duplicate records</li>
+                                <li>FR4: System shall validate data ranges before processing</li>
+                                <li>FR5: System shall achieve minimum 80% accuracy</li>
+                            </ul>
+                        </li>
+                        
+                        <li>
+                            <strong>Non-Functional Requirements</strong>
+                            <ul>
+                                <li>Performance: Process 1000 records in < 5 seconds</li>
+                                <li>Reliability: 99% uptime</li>
+                                <li>Usability: Simple interface for non-technical users</li>
+                                <li>Scalability: Handle up to 100,000 records</li>
+                            </ul>
+                        </li>
+                        
+                        <li>
+                            <strong>Technical Specifications</strong>
+                            <ul>
+                                <li>Programming language: Python 3.8+</li>
+                                <li>Libraries: NumPy, Pandas, Scikit-learn, Matplotlib</li>
+                                <li>Development environment: Jupyter Notebook / VS Code</li>
+                                <li>Version control: Git</li>
+                            </ul>
+                        </li>
+                    </ol>
+                    
+                    <div class="highlight">
+                        <strong>💡 Tip:</strong> Use Microsoft Word or Google Docs to create your SRS. Include diagrams, flowcharts, and tables to make it comprehensive and easy to understand.
+                    </div>
+                </div>
+                
+                <h3>Story 3: Project Planning & Documentation</h3>
+                
+                <div class="card">
+                    <h4>Task 6: Create Project Management Plan</h4>
+                    
+                    <p>This document outlines how the project will be executed, monitored, and controlled.</p>
+                    
+                    <h4>PM Plan Document Structure:</h4>
+                    
+                    <ol>
+                        <li>
+                            <strong>Project Charter</strong>
+                            <ul>
+                                <li>Project name: XPro AI Cancer Prediction Model</li>
+                                <li>Project sponsor: Apps Emplife</li>
+                                <li>Project manager: [Your Name]</li>
+                                <li>Start date: [Date]</li>
+                                <li>Expected completion: [Date + 6 weeks]</li>
+                            </ul>
+                        </li>
+                        
+                        <li>
+                            <strong>Project Scope</strong>
+                            <ul>
+                                <li><strong>In Scope:</strong>
+                                    <ul>
+                                        <li>Synthetic data generation (1000 records)</li>
+                                        <li>Data cleaning and preprocessing</li>
+                                        <li>ML model development and training</li>
+                                        <li>Model evaluation and validation</li>
+                                        <li>Documentation and reporting</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Out of Scope:</strong>
+                                    <ul>
+                                        <li>Real patient data collection</li>
+                                        <li>Clinical validation</li>
+                                        <li>Production deployment</li>
+                                        <li>Mobile app development</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        
+                        <li>
+                            <strong>Team Roles and Responsibilities</strong>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Role</th>
+                                        <th>Name</th>
+                                        <th>Responsibilities</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Project Manager</td>
+                                        <td>[Name]</td>
+                                        <td>Overall coordination, timeline management, stakeholder communication</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Data Scientist</td>
+                                        <td>[Name]</td>
+                                        <td>Data analysis, model development, algorithm selection</td>
+                                    </tr>
+                                    <tr>
+                                        <td>ML Engineer</td>
+                                        <td>[Name]</td>
+                                        <td>Code implementation, optimization, testing</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Documentation Lead</td>
+                                        <td>[Name]</td>
+                                        <td>SRS creation, technical writing, reporting</td>
+                                    </tr>
+                                    <tr>
+                                        <td>QA Specialist</td>
+                                        <td>[Name]</td>
+                                        <td>Data validation, model testing, quality assurance</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </li>
+                        
+                        <li>
+                            <strong>Project Timeline</strong>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Sprint</th>
+                                        <th>Duration</th>
+                                        <th>Deliverables</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Sprint 1</td>
+                                        <td>2 weeks</td>
+                                        <td>Cleaned dataset, SRS, PM Plan</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sprint 2</td>
+                                        <td>2 weeks</td>
+                                        <td>Trained model, evaluation metrics</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sprint 3</td>
+                                        <td>2 weeks</td>
+                                        <td>Refined model, final report</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </li>
+                        
+                        <li>
+                            <strong>Agile Methodology</strong>
+                            <p>We'll use Scrum framework:</p>
+                            <ul>
+                                <li><strong>Sprint Duration:</strong> 2 weeks</li>
+                                <li><strong>Daily Standups:</strong> 15-minute sync meetings</li>
+                                <li><strong>Sprint Planning:</strong> Define goals and tasks for the sprint</li>
+                                <li><strong>Sprint Review:</strong> Demo completed work to stakeholders</li>
+                                <li><strong>Sprint Retrospective:</strong> Reflect on what went well and what to improve</li>
+                            </ul>
+                        </li>
+                        
+                        <li>
+                            <strong>Tools and Technologies</strong>
+                            <ul>
+                                <li>Programming: Python 3.8+</li>
+                                <li>IDE: Jupyter Notebook, VS Code, PyCharm</li>
+                                <li>Libraries: NumPy, Pandas, Scikit-learn, Matplotlib, Seaborn</li>
+                                <li>Version Control: Git, GitHub</li>
+                                <li>Documentation: Microsoft Word, Google Docs</li>
+                                <li>Project Management: Trello, Jira, or Asana</li>
+                            </ul>
+                        </li>
+                        
+                        <li>
+                            <strong>Risk Management</strong>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Risk</th>
+                                        <th>Impact</th>
+                                        <th>Probability</th>
+                                        <th>Mitigation</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Poor data quality</td>
+                                        <td>High</td>
+                                        <td>Medium</td>
+                                        <td>Implement robust cleaning pipeline</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Model underfitting</td>
+                                        <td>High</td>
+                                        <td>Medium</td>
+                                        <td>Try multiple algorithms, feature engineering</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Scope creep</td>
+                                        <td>Medium</td>
+                                        <td>High</td>
+                                        <td>Strict scope management, change control</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Team member unavailability</td>
+                                        <td>Medium</td>
+                                        <td>Low</td>
+                                        <td>Cross-training, documentation</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </li>
+                        
+                        <li>
+                            <strong>Communication Plan</strong>
+                            <ul>
+                                <li>Daily standups: 9:00 AM (15 minutes)</li>
+                                <li>Weekly sprint review: Every Friday 2:00 PM</li>
+                                <li>Status reports: Weekly to stakeholders</li>
+                                <li>Communication channels: Slack, Email, Zoom</li>
+                            </ul>
+                        </li>
+                    </ol>
+                </div>
+                
+                <h3>Week 2 Deliverables</h3>
+                <div class="success">
+                    <ul>
+                        <li>✅ <strong>AI_&lt;TeamName&gt;_CleanedDataset.xlsx</strong> - Validated clean dataset</li>
+                        <li>✅ <strong>AI_&lt;TeamName&gt;_SRS.docx</strong> - System Requirement Specification</li>
+                        <li>✅ <strong>XAI_&lt;TeamName&gt;_PM_Plan.docx</strong> - Project Management Plan</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <section id="deliverables">
+                <h2>📦 Complete Sprint 1 Deliverables</h2>
+                
+                <div class="card-grid">
+                    <div class="card">
+                        <h3>💻 Python Script</h3>
+                        <p><strong>File:</strong> AI_&lt;TeamName&gt;_DataPrepCode.py</p>
+                        <p><strong>Contents:</strong></p>
+                        <ul>
+                            <li>Data generation code</li>
+                            <li>Anomaly introduction functions</li>
+                            <li>Data cleaning pipeline</li>
+                            <li>Validation functions</li>
+                            <li>Comments and documentation</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>📊 Cleaned Dataset</h3>
+                        <p><strong>File:</strong> AI_&lt;TeamName&gt;_CleanedDataset.xlsx</p>
+                        <p><strong>Requirements:</strong></p>
+                        <ul>
+                            <li>No missing values</li>
+                            <li>No duplicates</li>
+                            <li>No outliers (or justified retention)</li>
+                            <li>Consistent formatting</li>
+                            <li>~950-980 records (after cleaning)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>📄 SRS Document</h3>
+                        <p><strong>File:</strong> AI_&lt;TeamName&gt;_SRS.docx</p>
+                        <p><strong>Sections:</strong></p>
+                        <ul>
+                            <li>Introduction and scope</li>
+                            <li>System overview</li>
+                            <li>Functional requirements</li>
+                            <li>Non-functional requirements</li>
+                            <li>Technical specifications</li>
+                            <li>Data requirements</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>📋 PM Plan Document</h3>
+                        <p><strong>File:</strong> XAI_&lt;TeamName&gt;_PM_Plan.docx</p>
+                        <p><strong>Sections:</strong></p>
+                        <ul>
+                            <li>Project charter</li>
+                            <li>Scope definition</li>
+                            <li>Team roles</li>
+                            <li>Timeline and milestones</li>
+                            <li>Agile methodology</li>
+                            <li>Risk management</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="important">
+                    <h3>⚠️ Submission Guidelines</h3>
+                    <ul>
+                        <li>Replace <code>&lt;TeamName&gt;</code> with your actual team name</li>
+                        <li>Ensure all files are properly named</li>
+                        <li>Include comments in your Python code</li>
+                        <li>Use professional formatting in documents</li>
+                        <li>Proofread all deliverables</li>
+                        <li>Test your Python code before submission</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <section id="resources">
+                <h2>📚 Learning Resources</h2>
+                
+                <h3>Python Libraries Documentation</h3>
+                <div class="card-grid">
+                    <div class="card">
+                        <h4>NumPy</h4>
+                        <p>Numerical computing library for arrays and mathematical operations</p>
+                        <a href="https://numpy.org/doc/" class="btn" target="_blank">📖 NumPy Docs</a>
+                    </div>
+                    
+                    <div class="card">
+                        <h4>Pandas</h4>
+                        <p>Data manipulation and analysis library for DataFrames</p>
+                        <a href="https://pandas.pydata.org/docs/" class="btn" target="_blank">📖 Pandas Docs</a>
+                    </div>
+                    
+                    <div class="card">
+                        <h4>Scikit-learn</h4>
+                        <p>Machine learning library (for future sprints)</p>
+                        <a href="https://scikit-learn.org/stable/documentation.html" class="btn" target="_blank">📖 Sklearn Docs</a>
+                    </div>
+                    
+                    <div class="card">
+                        <h4>Matplotlib</h4>
+                        <p>Data visualization library for creating plots and charts</p>
+                        <a href="https://matplotlib.org/stable/contents.html" class="btn" target="_blank">📖 Matplotlib Docs</a>
+                    </div>
+                </div>
+                
+                <h3>Key Concepts to Study</h3>
+                
+                <div class="card">
+                    <h4>Data Preprocessing</h4>
+                    <ul>
+                        <li>Handling missing data (imputation techniques)</li>
+                        <li>Outlier detection (IQR, Z-score, isolation forests)</li>
+                        <li>Data normalization and standardization</li>
+                        <li>Feature scaling</li>
+                        <li>Encoding categorical variables</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <h4>Statistical Methods</h4>
+                    <ul>
+                        <li>Mean, median, mode (central tendency)</li>
+                        <li>Standard deviation and variance</li>
+                        <li>Quartiles and percentiles</li>
+                        <li>Correlation and covariance</li>
+                        <li>Normal distribution</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <h4>Software Engineering</h4>
+                    <ul>
+                        <li>Writing clean, documented code</li>
+                        <li>Version control with Git</li>
+                        <li>Agile/Scrum methodology</li>
+                        <li>Requirements documentation (SRS)</li>
+                        <li>Project management basics</li>
+                    </ul>
+                </div>
+                
+                <h3>Complete Python Example: End-to-End Pipeline</h3>
+                <pre><code>"""
+XPro AI - Cancer Prediction Data Preparation
+Sprint 1: Data Generation and Cleaning
+Team: [Your Team Name]
+"""
+
+import numpy as np
+import pandas as pd
+from scipy import stats
+import warnings
+warnings.filterwarnings('ignore')
+
+# ======================
+# STEP 1: DATA GENERATION
+# ======================
+
+def generate_synthetic_data(n=1000):
+    """Generate synthetic patient records"""
+    np.random.seed(42)
+    
+    data = {
+        'Patient_ID': range(1001, 1001 + n),
+        'Age': np.random.randint(18, 91, n),
+        'Gender': np.random.choice(['Male', 'Female'], n),
+        'Blood_Pressure': np.random.uniform(90, 200, n).round(1),
+        'Cholesterol': np.random.uniform(150, 300, n).round(1),
+        'BMI': np.random.uniform(15, 45, n).round(1),
+        'Smoking': np.random.choice(['Yes', 'No'], n),
+        'Family_History': np.random.choice(['Yes', 'No'], n),
+        'Cancer': np.random.choice([0, 1], n, p=[0.7, 0.3])
+    }
+    
+    return pd.DataFrame(data)
+
+# ======================
+# STEP 2: INTRODUCE ANOMALIES
+# ======================
+
+def introduce_anomalies(df):
+    """Add realistic data quality issues"""
+    n = len(df)
+    
+    # Missing values
+    missing_indices_chol = np.random.choice(df.index, size=int(0.05 * n), replace=False)
+    df.loc[missing_indices_chol, 'Cholesterol'] = np.nan
+    
+    missing_indices_bmi = np.random.choice(df.index, size=int(0.03 * n), replace=False)
+    df.loc[missing_indices_bmi, 'BMI'] = np.nan
+    
+    # Duplicates
+    duplicate_indices = np.random.choice(df.index, size=20, replace=False)
+    duplicates = df.loc[duplicate_indices].copy()
+    df = pd.concat([df, duplicates], ignore_index=True)
+    
+    # Outliers
+    outlier_indices_bp = np.random.choice(df.index, size=10, replace=False)
+    df.loc[outlier_indices_bp, 'Blood_Pressure'] = np.random.uniform(250, 300, 10)
+    
+    outlier_indices_bmi = np.random.choice(df.index, size=10, replace=False)
+    df.loc[outlier_indices_bmi, 'BMI'] = np.random.uniform(60, 80, 10)
+    
+    # Format inconsistencies
+    format_indices = np.random.choice(df.index, size=20, replace=False)
+    df.loc[format_indices, 'Gender'] = df.loc[format_indices, 'Gender'].str.lower()
+    
+    return df
+
+# ======================
+# STEP 3: DATA CLEANING
+# ======================
+
+def handle_missing_values(df):
+    """Impute missing values"""
+    print("Handling missing values...")
+    print(f"Missing before: {df.isnull().sum().sum()}")
+    
+    # Median imputation for numerical columns
+    df['Cholesterol'].fillna(df['Cholesterol'].median(), inplace=True)
+    df['BMI'].fillna(df['BMI'].median(), inplace=True)
+    
+    print(f"Missing after: {df.isnull().sum().sum()}")
+    return df
+
+def remove_duplicates(df):
+    """Remove duplicate records"""
+    print(f"\nRemoving duplicates...")
+    print(f"Rows before: {len(df)}")
+    df = df.drop_duplicates()
+    print(f"Rows after: {len(df)}")
+    return df
+
+def remove_outliers_iqr(df, columns):
+    """Remove outliers using IQR method"""
+    print(f"\nRemoving outliers...")
+    original_len = len(df)
+    
+    for column in columns:
+        Q1 = df[column].quantile(0.25)
+        Q3 = df[column].quantile(0.75)
+        IQR = Q3 - Q1
+        
+        lower_bound = Q1 - 1.5 * IQR
+        upper_bound = Q3 + 1.5 * IQR
+        
+        before = len(df)
+        df = df[(df[column] >= lower_bound) & (df[column] <= upper_bound)]
+        after = len(df)
+        
+        print(f"  {column}: Removed {before - after} outliers")
+    
+    print(f"Total outliers removed: {original_len - len(df)}")
+    return df
+
+def standardize_formats(df):
+    """Fix format inconsistencies"""
+    print(f"\nStandardizing formats...")
+    
+    # Standardize text columns
+    df['Gender'] = df['Gender'].str.strip().str.title()
+    df['Smoking'] = df['Smoking'].str.strip().str.title()
+    df['Family_History'] = df['Family_History'].str.strip().str.title()
+    
+    return df
+
+# ======================
+# STEP 4: VALIDATION
+# ======================
+
+def validate_dataset(df):
+    """Comprehensive data validation"""
+    print("\n" + "="*50)
+    print("DATA VALIDATION REPORT")
+    print("="*50)
+    
+    # Check missing values
+    print("\n1. Missing Values:")
+    missing = df.isnull().sum()
+    if missing.sum() == 0:
+        print("   ✅ No missing values")
+    else:
+        print(missing[missing > 0])
+    
+    # Check duplicates
+    print("\n2. Duplicate Rows:")
+    dupes = df.duplicated().sum()
+    if dupes == 0:
+        print("   ✅ No duplicates")
+    else:
+        print(f"   ⚠️ Found {dupes} duplicates")
+    
+    # Check data types
+    print("\n3. Data Types:")
+    print(df.dtypes)
+    
+    # Check value ranges
+    print("\n4. Value Ranges:")
+    print(df.describe())
+    
+    # Check categorical values
+    print("\n5. Categorical Distributions:")
+    print(f"   Gender: {df['Gender'].value_counts().to_dict()}")
+    print(f"   Smoking: {df['Smoking'].value_counts().to_dict()}")
+    print(f"   Cancer: {df['Cancer'].value_counts().to_dict()}")
+    
+    # Final summary
+    print("\n6. Dataset Summary:")
+    print(f"   Total rows: {len(df)}")
+    print(f"   Total columns: {len(df.columns)}")
+    print(f"   Memory usage: {df.memory_usage(deep=True).sum() / 1024**2:.2f} MB")
+    
+    print("\n" + "="*50)
+    print("✅ VALIDATION COMPLETE")
+    print("="*50)
+
+# ======================
+# MAIN EXECUTION
+# ======================
+
+def main():
+    """Main data preparation pipeline"""
+    print("XPro AI - Cancer Prediction Data Preparation")
+    print("=" * 50)
+    
+    # Step 1: Generate data
+    print("\nStep 1: Generating synthetic data...")
+    df = generate_synthetic_data(1000)
+    print(f"Generated {len(df)} records")
+    
+    # Step 2: Introduce anomalies
+    print("\nStep 2: Introducing anomalies...")
+    df = introduce_anomalies(df)
+    df.to_excel('AI_TeamName_DirtyDataset.xlsx', index=False)
+    print("Dirty dataset saved!")
+    
+    # Step 3: Clean data
+    print("\nStep 3: Cleaning data...")
+    df = handle_missing_values(df)
+    df = remove_duplicates(df)
+    df = remove_outliers_iqr(df, ['Blood_Pressure', 'Cholesterol', 'BMI'])
+    df = standardize_formats(df)
+    
+    # Step 4: Validate
+    validate_dataset(df)
+    
+    # Save cleaned dataset
+    df.to_excel('AI_TeamName_CleanedDataset.xlsx', index=False)
+    df.to_csv('AI_TeamName_CleanedDataset.csv', index=False)
+    print("\n✅ Cleaned dataset saved successfully!")
+    
+    return df
+
+# Run the pipeline
+if __name__ == "__main__":
+    cleaned_df = main()
+</code></pre>
+                
+                <h3>Additional Practice Exercises</h3>
+                
+                <div class="card">
+                    <h4>Exercise 1: Explore Your Data</h4>
+                    <ol>
+                        <li>Load your cleaned dataset</li>
+                        <li>Calculate mean, median, and mode for all numerical columns</li>
+                        <li>Create histograms for Age, Blood_Pressure, Cholesterol, and BMI</li>
+                        <li>Create a correlation matrix to see which features are related</li>
+                    </ol>
+                </div>
+                
+                <div class="card">
+                    <h4>Exercise 2: Advanced Cleaning</h4>
+                    <ol>
+                        <li>Implement Z-score method for outlier detection</li>
+                        <li>Compare results with IQR method</li>
+                        <li>Create a function to handle multiple imputation strategies</li>
+                        <li>Document which method works best and why</li>
+                    </ol>
+                </div>
+                
+                <div class="card">
+                    <h4>Exercise 3: Data Visualization</h4>
+                    <ol>
+                        <li>Create box plots to visualize outliers</li>
+                        <li>Plot distribution of Cancer cases by Gender</li>
+                        <li>Create scatter plots showing relationships between features</li>
+                        <li>Build a dashboard showing data quality before and after cleaning</li>
+                    </ol>
+                </div>
+            </section>
+            
+            <section id="eda">
+                <h2>📊 Enhanced Exploratory Data Analysis (EDA)</h2>
+                
+                <div class="highlight">
+                    <strong>Why EDA Matters:</strong>
+                    <p>Before building any ML model, you must understand your data deeply. EDA reveals patterns, relationships, and potential issues that directly impact model performance. In healthcare, understanding feature relationships can also provide clinical insights.</p>
+                </div>
+                
+                <h3>Correlation Analysis</h3>
+                
+                <div class="card">
+                    <h4>Understanding Feature Relationships</h4>
+                    <p>Correlation measures how strongly two variables are related. In cancer prediction, understanding which features correlate with the target variable helps identify important predictors.</p>
+                    
+                    <div class="info">
+                        <strong>Correlation Coefficient Interpretation:</strong>
+                        <ul>
+                            <li><strong>+1.0:</strong> Perfect positive correlation (as one increases, the other increases)</li>
+                            <li><strong>0:</strong> No correlation</li>
+                            <li><strong>-1.0:</strong> Perfect negative correlation (as one increases, the other decreases)</li>
+                            <li><strong>|0.7-1.0|:</strong> Strong correlation</li>
+                            <li><strong>|0.4-0.7|:</strong> Moderate correlation</li>
+                            <li><strong>|0.0-0.4|:</strong> Weak correlation</li>
+                        </ul>
+                    </div>
+                    
+                    <h4>Creating a Correlation Heatmap:</h4>
+                    <pre><code>import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load your cleaned dataset
+df = pd.read_excel('AI_TeamName_CleanedDataset.xlsx')
+
+# First, encode categorical variables for correlation analysis
+df_encoded = df.copy()
+df_encoded['Gender_Encoded'] = df_encoded['Gender'].map({'Male': 1, 'Female': 0})
+df_encoded['Smoking_Encoded'] = df_encoded['Smoking'].map({'Yes': 1, 'No': 0})
+df_encoded['Family_History_Encoded'] = df_encoded['Family_History'].map({'Yes': 1, 'No': 0})
+
+# Select numerical columns for correlation
+numerical_cols = ['Age', 'Blood_Pressure', 'Cholesterol', 'BMI', 
+                  'Gender_Encoded', 'Smoking_Encoded', 'Family_History_Encoded', 'Cancer']
+
+# Calculate correlation matrix
+correlation_matrix = df_encoded[numerical_cols].corr()
+
+# Create heatmap
+plt.figure(figsize=(12, 10))
+sns.heatmap(correlation_matrix, 
+            annot=True,           # Show correlation values
+            cmap='RdYlBu_r',      # Red-Yellow-Blue colormap (reversed)
+            center=0,             # Center colormap at 0
+            fmt='.2f',            # Format to 2 decimal places
+            square=True,          # Make cells square
+            linewidths=0.5)       # Add gridlines
+
+plt.title('Feature Correlation Heatmap - Cancer Prediction Dataset', fontsize=14, fontweight='bold')
+plt.tight_layout()
+plt.savefig('correlation_heatmap.png', dpi=300, bbox_inches='tight')
+plt.show()
+
+# Print correlations with Cancer target
+print("\n=== Correlations with Cancer Target ===")
+cancer_correlations = correlation_matrix['Cancer'].sort_values(ascending=False)
+print(cancer_correlations)
+</code></pre>
+                    
+                    <div class="success">
+                        <strong>Clinical Interpretation:</strong>
+                        <p>Look for features with moderate to strong correlation with Cancer. In our synthetic dataset, you might find:</p>
+                        <ul>
+                            <li><strong>Family_History:</strong> Often shows positive correlation (genetic predisposition)</li>
+                            <li><strong>Smoking:</strong> May show positive correlation (known risk factor)</li>
+                            <li><strong>Age:</strong> Often positively correlated (cancer risk increases with age)</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <h3>Distribution Analysis by Cancer Status</h3>
+                
+                <div class="card">
+                    <h4>Comparing Feature Distributions</h4>
+                    <p>Understanding how features differ between cancer-positive and cancer-negative patients helps identify discriminating factors.</p>
+                    
+                    <pre><code># Distribution analysis by Cancer status
+fig, axes = plt.subplots(2, 2, figsize=(14, 12))
+
+# Age distribution by Cancer status
+ax1 = axes[0, 0]
+df[df['Cancer'] == 0]['Age'].hist(bins=20, alpha=0.7, label='No Cancer', color='green', ax=ax1)
+df[df['Cancer'] == 1]['Age'].hist(bins=20, alpha=0.7, label='Cancer', color='red', ax=ax1)
+ax1.set_xlabel('Age')
+ax1.set_ylabel('Frequency')
+ax1.set_title('Age Distribution by Cancer Status')
+ax1.legend()
+
+# Blood Pressure distribution
+ax2 = axes[0, 1]
+df[df['Cancer'] == 0]['Blood_Pressure'].hist(bins=20, alpha=0.7, label='No Cancer', color='green', ax=ax2)
+df[df['Cancer'] == 1]['Blood_Pressure'].hist(bins=20, alpha=0.7, label='Cancer', color='red', ax=ax2)
+ax2.set_xlabel('Blood Pressure (mmHg)')
+ax2.set_ylabel('Frequency')
+ax2.set_title('Blood Pressure Distribution by Cancer Status')
+ax2.legend()
+
+# Cholesterol distribution
+ax3 = axes[1, 0]
+df[df['Cancer'] == 0]['Cholesterol'].hist(bins=20, alpha=0.7, label='No Cancer', color='green', ax=ax3)
+df[df['Cancer'] == 1]['Cholesterol'].hist(bins=20, alpha=0.7, label='Cancer', color='red', ax=ax3)
+ax3.set_xlabel('Cholesterol (mg/dL)')
+ax3.set_ylabel('Frequency')
+ax3.set_title('Cholesterol Distribution by Cancer Status')
+ax3.legend()
+
+# BMI distribution
+ax4 = axes[1, 1]
+df[df['Cancer'] == 0]['BMI'].hist(bins=20, alpha=0.7, label='No Cancer', color='green', ax=ax4)
+df[df['Cancer'] == 1]['BMI'].hist(bins=20, alpha=0.7, label='Cancer', color='red', ax=ax4)
+ax4.set_xlabel('BMI')
+ax4.set_ylabel('Frequency')
+ax4.set_title('BMI Distribution by Cancer Status')
+ax4.legend()
+
+plt.tight_layout()
+plt.savefig('distribution_by_cancer_status.png', dpi=300, bbox_inches='tight')
+plt.show()
+
+# Statistical summary by Cancer status
+print("\n=== Statistical Summary by Cancer Status ===")
+print(df.groupby('Cancer')[['Age', 'Blood_Pressure', 'Cholesterol', 'BMI']].describe())
+</code></pre>
+                    
+                    <h4>Box Plots for Comparison:</h4>
+                    <pre><code># Box plots comparing distributions
+fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+
+features = ['Age', 'Blood_Pressure', 'Cholesterol', 'BMI']
+for idx, feature in enumerate(features):
+    ax = axes[idx // 2, idx % 2]
+    df.boxplot(column=feature, by='Cancer', ax=ax)
+    ax.set_title(f'{feature} by Cancer Status')
+    ax.set_xlabel('Cancer (0=No, 1=Yes)')
+    ax.set_ylabel(feature)
+
+plt.suptitle('Feature Distributions by Cancer Status', fontsize=14, fontweight='bold')
+plt.tight_layout()
+plt.savefig('boxplots_by_cancer.png', dpi=300, bbox_inches='tight')
+plt.show()
+</code></pre>
+                </div>
+                
+                <h3>Feature Relationship Exploration</h3>
+                
+                <div class="card">
+                    <h4>Scatter Plots and Pair Plots</h4>
+                    <p>Visualize relationships between multiple features simultaneously to identify patterns and clusters.</p>
+                    
+                    <pre><code># Scatter plot matrix (Pair Plot)
+# Select key numerical features
+plot_features = ['Age', 'Blood_Pressure', 'Cholesterol', 'BMI', 'Cancer']
+
+# Create pair plot colored by Cancer status
+g = sns.pairplot(df[plot_features], 
+                 hue='Cancer',
+                 palette={0: 'green', 1: 'red'},
+                 diag_kind='hist',
+                 plot_kws={'alpha': 0.6},
+                 height=2.5)
+
+g.fig.suptitle('Feature Relationships - Cancer Prediction Dataset', y=1.02, fontsize=14, fontweight='bold')
+plt.savefig('pairplot_cancer.png', dpi=300, bbox_inches='tight')
+plt.show()
+</code></pre>
+                    
+                    <h4>Specific Feature Relationships:</h4>
+                    <pre><code># Detailed scatter plots for key relationships
+fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+
+# Age vs Blood Pressure
+ax1 = axes[0]
+colors = df['Cancer'].map({0: 'green', 1: 'red'})
+ax1.scatter(df['Age'], df['Blood_Pressure'], c=colors, alpha=0.6)
+ax1.set_xlabel('Age')
+ax1.set_ylabel('Blood Pressure (mmHg)')
+ax1.set_title('Age vs Blood Pressure')
+
+# Age vs BMI
+ax2 = axes[1]
+ax2.scatter(df['Age'], df['BMI'], c=colors, alpha=0.6)
+ax2.set_xlabel('Age')
+ax2.set_ylabel('BMI')
+ax2.set_title('Age vs BMI')
+
+# Cholesterol vs BMI
+ax3 = axes[2]
+ax3.scatter(df['Cholesterol'], df['BMI'], c=colors, alpha=0.6)
+ax3.set_xlabel('Cholesterol (mg/dL)')
+ax3.set_ylabel('BMI')
+ax3.set_title('Cholesterol vs BMI')
+
+# Add legend
+from matplotlib.patches import Patch
+legend_elements = [Patch(facecolor='green', alpha=0.6, label='No Cancer'),
+                   Patch(facecolor='red', alpha=0.6, label='Cancer')]
+fig.legend(handles=legend_elements, loc='upper right', bbox_to_anchor=(0.98, 0.98))
+
+plt.tight_layout()
+plt.savefig('scatter_relationships.png', dpi=300, bbox_inches='tight')
+plt.show()
+</code></pre>
+                </div>
+                
+                <h3>Categorical Feature Analysis</h3>
+                
+                <div class="card">
+                    <h4>Cancer Rates by Categorical Features:</h4>
+                    <pre><code># Cancer rates by categorical features
+fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+
+# Cancer rate by Gender
+ax1 = axes[0]
+gender_cancer = df.groupby('Gender')['Cancer'].mean() * 100
+gender_cancer.plot(kind='bar', ax=ax1, color=['#ff6b6b', '#4ecdc4'])
+ax1.set_title('Cancer Rate by Gender')
+ax1.set_xlabel('Gender')
+ax1.set_ylabel('Cancer Rate (%)')
+ax1.set_xticklabels(ax1.get_xticklabels(), rotation=0)
+for i, v in enumerate(gender_cancer):
+    ax1.text(i, v + 1, f'{v:.1f}%', ha='center', fontweight='bold')
+
+# Cancer rate by Smoking status
+ax2 = axes[1]
+smoking_cancer = df.groupby('Smoking')['Cancer'].mean() * 100
+smoking_cancer.plot(kind='bar', ax=ax2, color=['#4ecdc4', '#ff6b6b'])
+ax2.set_title('Cancer Rate by Smoking Status')
+ax2.set_xlabel('Smoking')
+ax2.set_ylabel('Cancer Rate (%)')
+ax2.set_xticklabels(ax2.get_xticklabels(), rotation=0)
+for i, v in enumerate(smoking_cancer):
+    ax2.text(i, v + 1, f'{v:.1f}%', ha='center', fontweight='bold')
+
+# Cancer rate by Family History
+ax3 = axes[2]
+family_cancer = df.groupby('Family_History')['Cancer'].mean() * 100
+family_cancer.plot(kind='bar', ax=ax3, color=['#4ecdc4', '#ff6b6b'])
+ax3.set_title('Cancer Rate by Family History')
+ax3.set_xlabel('Family History')
+ax3.set_ylabel('Cancer Rate (%)')
+ax3.set_xticklabels(ax3.get_xticklabels(), rotation=0)
+for i, v in enumerate(family_cancer):
+    ax3.text(i, v + 1, f'{v:.1f}%', ha='center', fontweight='bold')
+
+plt.tight_layout()
+plt.savefig('cancer_rates_categorical.png', dpi=300, bbox_inches='tight')
+plt.show()
+
+# Print exact values
+print("\n=== Cancer Rates by Categorical Features ===")
+print(f"\nBy Gender:\n{gender_cancer}")
+print(f"\nBy Smoking Status:\n{smoking_cancer}")
+print(f"\nBy Family History:\n{family_cancer}")
+</code></pre>
+                    
+                    <div class="highlight">
+                        <strong>💡 Clinical Insight:</strong>
+                        <p>Pay attention to which categorical features show the largest difference in cancer rates. Features with significant differences are likely to be important predictors in your ML model.</p>
+                    </div>
+                </div>
+                
+                <div class="key-concepts">
+                    <h4>🔑 Key EDA Takeaways</h4>
+                    <ul>
+                        <li><strong>Correlation heatmaps</strong> reveal linear relationships between features</li>
+                        <li><strong>Distribution analysis</strong> shows how features differ between classes</li>
+                        <li><strong>Scatter plots</strong> help identify clusters and non-linear patterns</li>
+                        <li><strong>Categorical analysis</strong> reveals risk factors for cancer</li>
+                        <li>Always interpret findings in <strong>clinical context</strong></li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="class-imbalance">
+                <h2>⚖️ Understanding Class Imbalance</h2>
+                
+                <div class="important">
+                    <strong>Critical Concept for Medical ML:</strong>
+                    <p>Class imbalance occurs when one class significantly outnumbers another. In medical datasets, this is common - most patients don't have the disease. Ignoring imbalance leads to models that predict "no disease" for everyone and still achieve high accuracy!</p>
+                </div>
+                
+                <h3>Identifying Class Imbalance</h3>
+                
+                <div class="card">
+                    <h4>Check Your Target Variable Distribution:</h4>
+                    <pre><code># Check class distribution in Cancer target
+print("=== Class Distribution Analysis ===")
+class_counts = df['Cancer'].value_counts()
+class_percentages = df['Cancer'].value_counts(normalize=True) * 100
+
+print("\nAbsolute counts:")
+print(class_counts)
+print("\nPercentages:")
+print(class_percentages)
+
+# Calculate imbalance ratio
+majority_class = class_counts.max()
+minority_class = class_counts.min()
+imbalance_ratio = majority_class / minority_class
+
+print(f"\nImbalance Ratio: {imbalance_ratio:.2f}:1")
+
+# Visualize class distribution
+fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+
+# Bar chart
+ax1 = axes[0]
+class_counts.plot(kind='bar', ax=ax1, color=['#28a745', '#dc3545'])
+ax1.set_title('Cancer Class Distribution')
+ax1.set_xlabel('Cancer (0=No, 1=Yes)')
+ax1.set_ylabel('Count')
+ax1.set_xticklabels(['No Cancer (0)', 'Cancer (1)'], rotation=0)
+for i, v in enumerate(class_counts):
+    ax1.text(i, v + 10, str(v), ha='center', fontweight='bold')
+
+# Pie chart
+ax2 = axes[1]
+ax2.pie(class_counts, labels=['No Cancer', 'Cancer'], autopct='%1.1f%%',
+        colors=['#28a745', '#dc3545'], explode=[0, 0.05])
+ax2.set_title('Cancer Class Proportions')
+
+plt.tight_layout()
+plt.savefig('class_distribution.png', dpi=300, bbox_inches='tight')
+plt.show()
+</code></pre>
+                    
+                    <div class="highlight">
+                        <strong>Interpreting Imbalance:</strong>
+                        <ul>
+                            <li><strong>Ratio 1:1 to 1:3:</strong> Mild imbalance - standard techniques usually work</li>
+                            <li><strong>Ratio 1:3 to 1:10:</strong> Moderate imbalance - consider resampling techniques</li>
+                            <li><strong>Ratio > 1:10:</strong> Severe imbalance - specialized techniques required</li>
+                        </ul>
+                        <p>Our synthetic dataset has ~70:30 ratio (2.3:1), which is mild but still worth addressing.</p>
+                    </div>
+                </div>
+
+                <h3>Why Class Imbalance Matters in Healthcare</h3>
+                
+                <div class="card">
+                    <h4>The Accuracy Paradox:</h4>
+                    <p>Consider a dataset with 95% healthy patients and 5% cancer patients:</p>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Model Strategy</th>
+                                <th>Accuracy</th>
+                                <th>Cancer Detection Rate</th>
+                                <th>Clinical Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Predict "No Cancer" for everyone</td>
+                                <td>95%</td>
+                                <td>0%</td>
+                                <td>❌ Useless - misses all cancer cases!</td>
+                            </tr>
+                            <tr>
+                                <td>Balanced model with proper handling</td>
+                                <td>85%</td>
+                                <td>80%</td>
+                                <td>✅ Valuable - catches most cancer cases</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="important">
+                        <strong>In cancer screening, missing a cancer case (False Negative) is far worse than a false alarm (False Positive).</strong>
+                        <p>A false alarm leads to additional tests; a missed cancer can be fatal.</p>
+                    </div>
+                </div>
+
+                <h3>Introduction to SMOTE (Synthetic Minority Over-sampling Technique)</h3>
+                
+                <div class="card">
+                    <h4>What is SMOTE?</h4>
+                    <p>SMOTE creates synthetic examples of the minority class by interpolating between existing minority samples. It doesn't just duplicate existing records - it creates new, realistic data points.</p>
+                    
+                    <div class="info">
+                        <strong>How SMOTE Works:</strong>
+                        <ol>
+                            <li>Select a minority class sample</li>
+                            <li>Find its k nearest neighbors (also minority class)</li>
+                            <li>Randomly select one neighbor</li>
+                            <li>Create a new sample along the line connecting them</li>
+                            <li>Repeat until classes are balanced</li>
+                        </ol>
+                    </div>
+                    
+                    <h4>SMOTE Implementation (Preview for Sprint 2):</h4>
+                    <pre><code># Install imbalanced-learn library
+# pip install imbalanced-learn
+
+from imblearn.over_sampling import SMOTE
+from sklearn.model_selection import train_test_split
+
+# Prepare features and target
+X = df_encoded[['Age', 'Blood_Pressure', 'Cholesterol', 'BMI', 
+                'Gender_Encoded', 'Smoking_Encoded', 'Family_History_Encoded']]
+y = df['Cancer']
+
+# Split data BEFORE applying SMOTE (important!)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, 
+                                                     random_state=42, stratify=y)
+
+print("Before SMOTE:")
+print(f"Training set class distribution:\n{y_train.value_counts()}")
+
+# Apply SMOTE only to training data
+smote = SMOTE(random_state=42)
+X_train_resampled, y_train_resampled = smote.fit_resample(X_train, y_train)
+
+print("\nAfter SMOTE:")
+print(f"Training set class distribution:\n{pd.Series(y_train_resampled).value_counts()}")
+
+# Visualize the effect
+fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+
+# Before SMOTE
+ax1 = axes[0]
+y_train.value_counts().plot(kind='bar', ax=ax1, color=['#28a745', '#dc3545'])
+ax1.set_title('Before SMOTE')
+ax1.set_xlabel('Cancer')
+ax1.set_ylabel('Count')
+
+# After SMOTE
+ax2 = axes[1]
+pd.Series(y_train_resampled).value_counts().plot(kind='bar', ax=ax2, color=['#28a745', '#dc3545'])
+ax2.set_title('After SMOTE')
+ax2.set_xlabel('Cancer')
+ax2.set_ylabel('Count')
+
+plt.tight_layout()
+plt.savefig('smote_effect.png', dpi=300, bbox_inches='tight')
+plt.show()
+</code></pre>
+                    
+                    <div class="important">
+                        <strong>⚠️ Critical Rule:</strong> Always apply SMOTE ONLY to training data, NEVER to test data! Applying SMOTE to test data causes data leakage and gives overly optimistic results.
+                    </div>
+                </div>
+
+                <h3>Class Weights: An Alternative Approach</h3>
+                
+                <div class="card">
+                    <h4>What are Class Weights?</h4>
+                    <p>Instead of resampling data, class weights tell the model to pay more attention to the minority class during training. The model penalizes misclassifying minority samples more heavily.</p>
+                    
+                    <h4>How Class Weights Work:</h4>
+                    <pre><code># Calculate class weights
+from sklearn.utils.class_weight import compute_class_weight
+
+# Compute balanced class weights
+class_weights = compute_class_weight('balanced', 
+                                      classes=np.unique(y_train), 
+                                      y=y_train)
+class_weight_dict = dict(zip(np.unique(y_train), class_weights))
+
+print("Computed Class Weights:")
+print(f"Class 0 (No Cancer): {class_weight_dict[0]:.3f}")
+print(f"Class 1 (Cancer): {class_weight_dict[1]:.3f}")
+
+# The minority class gets a higher weight!
+# This means misclassifying a cancer patient costs more than misclassifying a healthy patient
+</code></pre>
+                    
+                    <h4>Using Class Weights in Models (Preview for Sprint 2):</h4>
+                    <pre><code>from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+
+# Random Forest with class weights
+rf_weighted = RandomForestClassifier(
+    n_estimators=100,
+    class_weight='balanced',  # Automatically computes weights
+    random_state=42
+)
+
+# Logistic Regression with class weights
+lr_weighted = LogisticRegression(
+    class_weight='balanced',
+    random_state=42
+)
+
+# Or use custom weights
+rf_custom = RandomForestClassifier(
+    n_estimators=100,
+    class_weight={0: 1, 1: 3},  # Cancer class weighted 3x more
+    random_state=42
+)
+</code></pre>
+                </div>
+                
+                <h3>SMOTE vs Class Weights: When to Use Each</h3>
+                
+                <div class="card">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Aspect</th>
+                                <th>SMOTE</th>
+                                <th>Class Weights</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Approach</strong></td>
+                                <td>Creates synthetic samples</td>
+                                <td>Adjusts loss function</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Data Size</strong></td>
+                                <td>Increases training data</td>
+                                <td>Keeps original data size</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Training Time</strong></td>
+                                <td>Longer (more samples)</td>
+                                <td>Same as original</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Best For</strong></td>
+                                <td>Small datasets, severe imbalance</td>
+                                <td>Large datasets, mild imbalance</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Risk</strong></td>
+                                <td>May create unrealistic samples</td>
+                                <td>May not fully address imbalance</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="success">
+                        <strong>Recommendation for Our Project:</strong>
+                        <p>With ~70:30 class distribution, start with <code>class_weight='balanced'</code> in your models. If results are unsatisfactory, try SMOTE in Sprint 2.</p>
+                    </div>
+                </div>
+                
+                <div class="key-concepts">
+                    <h4>🔑 Key Class Imbalance Takeaways</h4>
+                    <ul>
+                        <li><strong>Always check</strong> class distribution before modeling</li>
+                        <li><strong>Accuracy alone</strong> is misleading for imbalanced data</li>
+                        <li><strong>SMOTE</strong> creates synthetic minority samples</li>
+                        <li><strong>Class weights</strong> penalize minority misclassification more</li>
+                        <li><strong>Never apply SMOTE to test data</strong> - only training data</li>
+                        <li>In healthcare, <strong>Recall (sensitivity)</strong> is often more important than accuracy</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="validation-checklist">
+                <h2>✅ Comprehensive Data Validation Checklist</h2>
+                
+                <div class="highlight">
+                    <strong>Why Validation Matters in Healthcare ML:</strong>
+                    <p>In medical applications, data quality directly impacts patient outcomes. A model trained on invalid data could make dangerous predictions. This checklist ensures your data meets clinical and technical standards.</p>
+                </div>
+                
+                <h3>Clinical Context Validation</h3>
+                
+                <div class="card">
+                    <h4>1. Physiological Range Validation</h4>
+                    <p>Ensure all clinical measurements fall within medically plausible ranges:</p>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th>Valid Range</th>
+                                <th>Clinical Context</th>
+                                <th>Red Flags</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Age</strong></td>
+                                <td>18-90 years</td>
+                                <td>Adult patient population</td>
+                                <td>Negative values, >120 years</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Blood Pressure</strong></td>
+                                <td>90-200 mmHg</td>
+                                <td>Systolic BP; 90-120 normal, >140 hypertension</td>
+                                <td>&lt;60 (shock), >250 (hypertensive crisis)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Cholesterol</strong></td>
+                                <td>150-300 mg/dL</td>
+                                <td>&lt;200 desirable, 200-239 borderline, ≥240 high</td>
+                                <td>&lt;100 (rare), >400 (familial hypercholesterolemia)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>BMI</strong></td>
+                                <td>15-45</td>
+                                <td>18.5-24.9 normal, 25-29.9 overweight, ≥30 obese</td>
+                                <td>&lt;12 (severe malnutrition), >60 (extreme obesity)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Automated Validation Code</h3>
+                
+                <div class="card">
+                    <h4>Complete Validation Function:</h4>
+                    <pre><code>def comprehensive_data_validation(df):
+    """
+    Comprehensive data validation for cancer prediction dataset.
+    Returns a validation report with pass/fail status for each check.
+    """
+    report = {
+        'total_records': len(df),
+        'checks': [],
+        'warnings': [],
+        'errors': []
+    }
+    
+    # ========================================
+    # 1. STRUCTURAL CHECKS
+    # ========================================
+    
+    # Check required columns
+    required_columns = ['Patient_ID', 'Age', 'Gender', 'Blood_Pressure', 
+                        'Cholesterol', 'BMI', 'Smoking', 'Family_History', 'Cancer']
+    missing_cols = set(required_columns) - set(df.columns)
+    if missing_cols:
+        report['errors'].append(f"Missing required columns: {missing_cols}")
+    else:
+        report['checks'].append("✅ All required columns present")
+    
+    # Check for duplicate Patient_IDs
+    duplicate_ids = df['Patient_ID'].duplicated().sum()
+    if duplicate_ids > 0:
+        report['errors'].append(f"❌ Found {duplicate_ids} duplicate Patient_IDs")
+    else:
+        report['checks'].append("✅ All Patient_IDs are unique")
+    
+    # Check for duplicate rows
+    duplicate_rows = df.duplicated().sum()
+    if duplicate_rows > 0:
+        report['warnings'].append(f"⚠️ Found {duplicate_rows} duplicate rows")
+    else:
+        report['checks'].append("✅ No duplicate rows")
+    
+    # ========================================
+    # 2. MISSING VALUE CHECKS
+    # ========================================
+    
+    missing_summary = df.isnull().sum()
+    total_missing = missing_summary.sum()
+    
+    if total_missing > 0:
+        report['warnings'].append(f"⚠️ Total missing values: {total_missing}")
+        for col, count in missing_summary[missing_summary > 0].items():
+            pct = (count / len(df)) * 100
+            report['warnings'].append(f"   - {col}: {count} ({pct:.1f}%)")
+    else:
+        report['checks'].append("✅ No missing values")
+    
+    # ========================================
+    # 3. DATA TYPE CHECKS
+    # ========================================
+    
+    expected_types = {
+        'Patient_ID': ['int64', 'int32'],
+        'Age': ['int64', 'int32'],
+        'Gender': ['object'],
+        'Blood_Pressure': ['float64', 'float32'],
+        'Cholesterol': ['float64', 'float32'],
+        'BMI': ['float64', 'float32'],
+        'Smoking': ['object'],
+        'Family_History': ['object'],
+        'Cancer': ['int64', 'int32']
+    }
+    
+    for col, valid_types in expected_types.items():
+        if col in df.columns:
+            actual_type = str(df[col].dtype)
+            if actual_type not in valid_types:
+                report['warnings'].append(f"⚠️ {col} has type {actual_type}, expected {valid_types}")
+    
+    report['checks'].append("✅ Data types validated")
+    
+    # ========================================
+    # 4. CLINICAL RANGE VALIDATION
+    # ========================================
+    
+    # Age validation
+    age_invalid = ((df['Age'] < 18) | (df['Age'] > 90)).sum()
+    if age_invalid > 0:
+        report['errors'].append(f"❌ {age_invalid} records with Age outside 18-90 range")
+    else:
+        report['checks'].append("✅ Age values within valid range (18-90)")
+    
+    # Blood Pressure validation
+    bp_invalid = ((df['Blood_Pressure'] < 60) | (df['Blood_Pressure'] > 250)).sum()
+    if bp_invalid > 0:
+        report['errors'].append(f"❌ {bp_invalid} records with Blood_Pressure outside 60-250 range")
+    else:
+        report['checks'].append("✅ Blood_Pressure values within valid range")
+    
+    # Cholesterol validation
+    chol_invalid = ((df['Cholesterol'] < 100) | (df['Cholesterol'] > 400)).sum()
+    if chol_invalid > 0:
+        report['errors'].append(f"❌ {chol_invalid} records with Cholesterol outside 100-400 range")
+    else:
+        report['checks'].append("✅ Cholesterol values within valid range")
+    
+    # BMI validation
+    bmi_invalid = ((df['BMI'] < 12) | (df['BMI'] > 60)).sum()
+    if bmi_invalid > 0:
+        report['errors'].append(f"❌ {bmi_invalid} records with BMI outside 12-60 range")
+    else:
+        report['checks'].append("✅ BMI values within valid range")
+    
+    # ========================================
+    # 5. CATEGORICAL VALUE VALIDATION
+    # ========================================
+    
+    # Gender validation
+    valid_genders = {'Male', 'Female'}
+    actual_genders = set(df['Gender'].unique())
+    invalid_genders = actual_genders - valid_genders
+    if invalid_genders:
+        report['errors'].append(f"❌ Invalid Gender values: {invalid_genders}")
+    else:
+        report['checks'].append("✅ Gender values are valid (Male/Female)")
+    
+    # Smoking validation
+    valid_smoking = {'Yes', 'No'}
+    actual_smoking = set(df['Smoking'].unique())
+    invalid_smoking = actual_smoking - valid_smoking
+    if invalid_smoking:
+        report['errors'].append(f"❌ Invalid Smoking values: {invalid_smoking}")
+    else:
+        report['checks'].append("✅ Smoking values are valid (Yes/No)")
+    
+    # Family_History validation
+    valid_fh = {'Yes', 'No'}
+    actual_fh = set(df['Family_History'].unique())
+    invalid_fh = actual_fh - valid_fh
+    if invalid_fh:
+        report['errors'].append(f"❌ Invalid Family_History values: {invalid_fh}")
+    else:
+        report['checks'].append("✅ Family_History values are valid (Yes/No)")
+    
+    # Cancer validation
+    valid_cancer = {0, 1}
+    actual_cancer = set(df['Cancer'].unique())
+    invalid_cancer = actual_cancer - valid_cancer
+    if invalid_cancer:
+        report['errors'].append(f"❌ Invalid Cancer values: {invalid_cancer}")
+    else:
+        report['checks'].append("✅ Cancer values are valid (0/1)")
+    
+    # ========================================
+    # 6. CLASS BALANCE CHECK
+    # ========================================
+    
+    cancer_ratio = df['Cancer'].value_counts(normalize=True)
+    minority_pct = cancer_ratio.min() * 100
+    
+    if minority_pct < 10:
+        report['warnings'].append(f"⚠️ Severe class imbalance: minority class is {minority_pct:.1f}%")
+    elif minority_pct < 30:
+        report['warnings'].append(f"⚠️ Moderate class imbalance: minority class is {minority_pct:.1f}%")
+    else:
+        report['checks'].append(f"✅ Class balance acceptable: minority class is {minority_pct:.1f}%")
+    
+    # ========================================
+    # 7. STATISTICAL OUTLIER CHECK
+    # ========================================
+    
+    numerical_cols = ['Age', 'Blood_Pressure', 'Cholesterol', 'BMI']
+    for col in numerical_cols:
+        Q1 = df[col].quantile(0.25)
+        Q3 = df[col].quantile(0.75)
+        IQR = Q3 - Q1
+        outliers = ((df[col] < Q1 - 1.5*IQR) | (df[col] > Q3 + 1.5*IQR)).sum()
+        if outliers > 0:
+            pct = (outliers / len(df)) * 100
+            report['warnings'].append(f"⚠️ {col}: {outliers} statistical outliers ({pct:.1f}%)")
+    
+    return report
+
+
+def print_validation_report(report):
+    """Pretty print the validation report"""
+    print("\n" + "="*60)
+    print("📋 DATA VALIDATION REPORT")
+    print("="*60)
+    print(f"\nTotal Records: {report['total_records']}")
+    
+    print("\n✅ PASSED CHECKS:")
+    for check in report['checks']:
+        print(f"   {check}")
+    
+    if report['warnings']:
+        print("\n⚠️ WARNINGS:")
+        for warning in report['warnings']:
+            print(f"   {warning}")
+    
+    if report['errors']:
+        print("\n❌ ERRORS (Must Fix):")
+        for error in report['errors']:
+            print(f"   {error}")
+    
+    # Overall status
+    print("\n" + "-"*60)
+    if report['errors']:
+        print("🔴 VALIDATION FAILED - Fix errors before proceeding")
+    elif report['warnings']:
+        print("🟡 VALIDATION PASSED WITH WARNINGS - Review warnings")
+    else:
+        print("🟢 VALIDATION PASSED - Data is ready for modeling")
+    print("="*60)
+
+
+# Run validation
+report = comprehensive_data_validation(df)
+print_validation_report(report)
+</code></pre>
+                </div>
+
+                <h3>Manual Validation Checklist</h3>
+                
+                <div class="card">
+                    <h4>Pre-Modeling Data Quality Checklist:</h4>
+                    
+                    <div class="info">
+                        <p>Use this checklist before proceeding to Sprint 2. All items should be checked off.</p>
+                    </div>
+                    
+                    <h4>📊 Structural Integrity</h4>
+                    <ul>
+                        <li>☐ All required columns are present</li>
+                        <li>☐ No duplicate Patient_IDs</li>
+                        <li>☐ No duplicate rows (or duplicates are intentional)</li>
+                        <li>☐ Data types are correct for each column</li>
+                        <li>☐ Dataset has expected number of records (~950-1000 after cleaning)</li>
+                    </ul>
+                    
+                    <h4>🔢 Missing Values</h4>
+                    <ul>
+                        <li>☐ No missing values in any column</li>
+                        <li>☐ If imputation was used, method is documented</li>
+                        <li>☐ Imputation method is clinically appropriate</li>
+                    </ul>
+                    
+                    <h4>📈 Value Ranges</h4>
+                    <ul>
+                        <li>☐ Age: 18-90 years</li>
+                        <li>☐ Blood_Pressure: 90-200 mmHg (no extreme outliers)</li>
+                        <li>☐ Cholesterol: 150-300 mg/dL (no extreme outliers)</li>
+                        <li>☐ BMI: 15-45 (no extreme outliers)</li>
+                        <li>☐ Gender: Only "Male" or "Female"</li>
+                        <li>☐ Smoking: Only "Yes" or "No"</li>
+                        <li>☐ Family_History: Only "Yes" or "No"</li>
+                        <li>☐ Cancer: Only 0 or 1</li>
+                    </ul>
+                    
+                    <h4>📝 Format Consistency</h4>
+                    <ul>
+                        <li>☐ Text values are properly capitalized (Title Case)</li>
+                        <li>☐ No leading/trailing whitespace in text fields</li>
+                        <li>☐ Numerical values have consistent decimal places</li>
+                    </ul>
+                    
+                    <h4>⚖️ Class Balance</h4>
+                    <ul>
+                        <li>☐ Cancer class distribution is documented</li>
+                        <li>☐ Imbalance ratio is calculated</li>
+                        <li>☐ Strategy for handling imbalance is planned (if needed)</li>
+                    </ul>
+                    
+                    <h4>📊 Statistical Sanity</h4>
+                    <ul>
+                        <li>☐ Mean and median are reasonable for each numerical feature</li>
+                        <li>☐ Standard deviation is not unexpectedly large</li>
+                        <li>☐ No impossible correlations (e.g., perfect correlation between unrelated features)</li>
+                    </ul>
+                    
+                    <h4>🏥 Clinical Validity</h4>
+                    <ul>
+                        <li>☐ Feature distributions match expected clinical patterns</li>
+                        <li>☐ Relationships between features are clinically plausible</li>
+                        <li>☐ Cancer rates by risk factors (smoking, family history) make clinical sense</li>
+                    </ul>
+                </div>
+                
+                <div class="success">
+                    <strong>✅ Validation Complete!</strong>
+                    <p>Once all checklist items are verified, your data is ready for feature engineering and model development in Sprint 2.</p>
+                </div>
+                
+                <div class="key-concepts">
+                    <h4>🔑 Key Validation Takeaways</h4>
+                    <ul>
+                        <li><strong>Automate validation</strong> to catch issues early and consistently</li>
+                        <li><strong>Clinical context</strong> is essential - valid data must be medically plausible</li>
+                        <li><strong>Document everything</strong> - future you will thank present you</li>
+                        <li><strong>Validate before and after</strong> each data transformation</li>
+                        <li><strong>Class imbalance</strong> must be addressed before modeling</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="quiz">
+                <h2>📝 Sprint 1 Knowledge Check</h2>
+                
+                <div class="highlight">
+                    <strong>Test Your Understanding:</strong>
+                    <p>Complete these questions to verify your understanding of Sprint 1 concepts. Try to answer without looking at the material first!</p>
+                </div>
+                
+                <h3>Multiple Choice Questions</h3>
+                
+                <div class="card">
+                    <h4>Question 1: Missing Value Handling</h4>
+                    <p>You have a dataset with 5% missing values in the Cholesterol column. The data has several outliers. Which imputation method is most appropriate?</p>
+                    <ol type="A">
+                        <li>Mean imputation</li>
+                        <li>Median imputation</li>
+                        <li>Mode imputation</li>
+                        <li>Delete all rows with missing values</li>
+                    </ol>
+                    <details>
+                        <summary>Click to reveal answer</summary>
+                        <div class="success">
+                            <strong>Answer: B) Median imputation</strong>
+                            <p>Median is preferred for numerical data with outliers because it's not affected by extreme values. Mean would be skewed by outliers, mode is for categorical data, and deleting rows loses valuable data.</p>
+                        </div>
+                    </details>
+                </div>
+                
+                <div class="card">
+                    <h4>Question 2: Outlier Detection</h4>
+                    <p>Using the IQR method, if Q1 = 100 and Q3 = 200, what is the upper bound for outlier detection?</p>
+                    <ol type="A">
+                        <li>250</li>
+                        <li>300</li>
+                        <li>350</li>
+                        <li>400</li>
+                    </ol>
+                    <details>
+                        <summary>Click to reveal answer</summary>
+                        <div class="success">
+                            <strong>Answer: C) 350</strong>
+                            <p>IQR = Q3 - Q1 = 200 - 100 = 100<br>
+                            Upper bound = Q3 + 1.5 × IQR = 200 + 1.5 × 100 = 200 + 150 = 350</p>
+                        </div>
+                    </details>
+                </div>
+                
+                <div class="card">
+                    <h4>Question 3: Class Imbalance</h4>
+                    <p>Your cancer dataset has 900 healthy patients and 100 cancer patients. What is the imbalance ratio?</p>
+                    <ol type="A">
+                        <li>9:1</li>
+                        <li>1:9</li>
+                        <li>90:10</li>
+                        <li>10:90</li>
+                    </ol>
+                    <details>
+                        <summary>Click to reveal answer</summary>
+                        <div class="success">
+                            <strong>Answer: A) 9:1</strong>
+                            <p>Imbalance ratio = Majority class / Minority class = 900 / 100 = 9:1<br>
+                            This means for every cancer patient, there are 9 healthy patients.</p>
+                        </div>
+                    </details>
+                </div>
+                
+                <div class="card">
+                    <h4>Question 4: SMOTE Application</h4>
+                    <p>When should SMOTE be applied in the ML pipeline?</p>
+                    <ol type="A">
+                        <li>Before splitting data into train and test sets</li>
+                        <li>Only to the training data, after the train-test split</li>
+                        <li>Only to the test data</li>
+                        <li>To both training and test data equally</li>
+                    </ol>
+                    <details>
+                        <summary>Click to reveal answer</summary>
+                        <div class="success">
+                            <strong>Answer: B) Only to the training data, after the train-test split</strong>
+                            <p>SMOTE must only be applied to training data. Applying it before splitting or to test data causes data leakage, giving unrealistically optimistic results.</p>
+                        </div>
+                    </details>
+                </div>
+                
+                <div class="card">
+                    <h4>Question 5: Correlation Interpretation</h4>
+                    <p>A correlation coefficient of -0.75 between two features indicates:</p>
+                    <ol type="A">
+                        <li>Strong positive relationship</li>
+                        <li>Strong negative relationship</li>
+                        <li>Weak relationship</li>
+                        <li>No relationship</li>
+                    </ol>
+                    <details>
+                        <summary>Click to reveal answer</summary>
+                        <div class="success">
+                            <strong>Answer: B) Strong negative relationship</strong>
+                            <p>The magnitude |0.75| indicates strong correlation (>0.7). The negative sign means as one variable increases, the other decreases.</p>
+                        </div>
+                    </details>
+                </div>
+
+                <div class="card">
+                    <h4>Question 6: Data Validation</h4>
+                    <p>Which of the following is NOT a valid reason to flag a record for review in a medical dataset?</p>
+                    <ol type="A">
+                        <li>Blood pressure of 350 mmHg</li>
+                        <li>BMI of 25</li>
+                        <li>Age of -5 years</li>
+                        <li>Cholesterol of 50 mg/dL</li>
+                    </ol>
+                    <details>
+                        <summary>Click to reveal answer</summary>
+                        <div class="success">
+                            <strong>Answer: B) BMI of 25</strong>
+                            <p>BMI of 25 is perfectly normal (normal range is 18.5-24.9, 25 is just slightly overweight). The other values are physiologically impossible or extremely unlikely.</p>
+                        </div>
+                    </details>
+                </div>
+                
+                <div class="card">
+                    <h4>Question 7: EDA Purpose</h4>
+                    <p>What is the PRIMARY purpose of Exploratory Data Analysis (EDA)?</p>
+                    <ol type="A">
+                        <li>To train machine learning models</li>
+                        <li>To understand data patterns, relationships, and quality issues</li>
+                        <li>To deploy models to production</li>
+                        <li>To collect more data</li>
+                    </ol>
+                    <details>
+                        <summary>Click to reveal answer</summary>
+                        <div class="success">
+                            <strong>Answer: B) To understand data patterns, relationships, and quality issues</strong>
+                            <p>EDA is about understanding your data before modeling. It reveals patterns, correlations, outliers, and data quality issues that inform preprocessing and model selection.</p>
+                        </div>
+                    </details>
+                </div>
+                
+                <h3>Code Completion Exercises</h3>
+                
+                <div class="card">
+                    <h4>Exercise 1: Complete the Missing Value Check</h4>
+                    <p>Fill in the blanks to check for missing values and calculate the percentage:</p>
+                    <pre><code># Check missing values
+missing_count = df.______().______()
+missing_percentage = (missing_count / ______(df)) * 100
+
+print(f"Missing values: {missing_count}")
+print(f"Missing percentage: {missing_percentage:.2f}%")
+</code></pre>
+                    <details>
+                        <summary>Click to reveal answer</summary>
+                        <div class="success">
+                            <pre><code># Check missing values
+missing_count = df.isnull().sum()
+missing_percentage = (missing_count / len(df)) * 100
+
+print(f"Missing values: {missing_count}")
+print(f"Missing percentage: {missing_percentage:.2f}%")
+</code></pre>
+                        </div>
+                    </details>
+                </div>
+                
+                <div class="card">
+                    <h4>Exercise 2: Complete the Outlier Detection Function</h4>
+                    <p>Fill in the blanks to implement IQR-based outlier detection:</p>
+                    <pre><code>def detect_outliers_iqr(df, column):
+    Q1 = df[column].quantile(______)
+    Q3 = df[column].quantile(______)
+    IQR = ______ - ______
+    
+    lower_bound = Q1 - ______ * IQR
+    upper_bound = Q3 + ______ * IQR
+    
+    outliers = df[(df[column] < lower_bound) | (df[column] > upper_bound)]
+    return outliers
+</code></pre>
+                    <details>
+                        <summary>Click to reveal answer</summary>
+                        <div class="success">
+                            <pre><code>def detect_outliers_iqr(df, column):
+    Q1 = df[column].quantile(0.25)
+    Q3 = df[column].quantile(0.75)
+    IQR = Q3 - Q1
+    
+    lower_bound = Q1 - 1.5 * IQR
+    upper_bound = Q3 + 1.5 * IQR
+    
+    outliers = df[(df[column] < lower_bound) | (df[column] > upper_bound)]
+    return outliers
+</code></pre>
+                        </div>
+                    </details>
+                </div>
+                
+                <div class="card">
+                    <h4>Exercise 3: Complete the Correlation Analysis</h4>
+                    <p>Fill in the blanks to create a correlation heatmap:</p>
+                    <pre><code>import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Calculate correlation matrix
+correlation_matrix = df[numerical_cols].______()
+
+# Create heatmap
+plt.figure(figsize=(10, 8))
+sns.______(correlation_matrix, 
+            annot=______,
+            cmap='RdYlBu_r',
+            center=0)
+plt.title('Feature Correlation Heatmap')
+plt.show()
+</code></pre>
+                    <details>
+                        <summary>Click to reveal answer</summary>
+                        <div class="success">
+                            <pre><code>import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Calculate correlation matrix
+correlation_matrix = df[numerical_cols].corr()
+
+# Create heatmap
+plt.figure(figsize=(10, 8))
+sns.heatmap(correlation_matrix, 
+            annot=True,
+            cmap='RdYlBu_r',
+            center=0)
+plt.title('Feature Correlation Heatmap')
+plt.show()
+</code></pre>
+                        </div>
+                    </details>
+                </div>
+                
+                <div class="card">
+                    <h4>Exercise 4: Complete the Class Balance Check</h4>
+                    <p>Fill in the blanks to check class distribution:</p>
+                    <pre><code># Check class distribution
+class_counts = df['Cancer'].______()
+class_percentages = df['Cancer'].______(normalize=______) * 100
+
+print("Class Distribution:")
+print(class_counts)
+print(f"\nPercentages:\n{class_percentages}")
+
+# Calculate imbalance ratio
+imbalance_ratio = class_counts.______() / class_counts.______()
+print(f"\nImbalance Ratio: {imbalance_ratio:.2f}:1")
+</code></pre>
+                    <details>
+                        <summary>Click to reveal answer</summary>
+                        <div class="success">
+                            <pre><code># Check class distribution
+class_counts = df['Cancer'].value_counts()
+class_percentages = df['Cancer'].value_counts(normalize=True) * 100
+
+print("Class Distribution:")
+print(class_counts)
+print(f"\nPercentages:\n{class_percentages}")
+
+# Calculate imbalance ratio
+imbalance_ratio = class_counts.max() / class_counts.min()
+print(f"\nImbalance Ratio: {imbalance_ratio:.2f}:1")
+</code></pre>
+                        </div>
+                    </details>
+                </div>
+                
+                <div class="success">
+                    <h4>🎉 Quiz Complete!</h4>
+                    <p>Review any questions you got wrong and revisit the relevant sections. Understanding these concepts is essential for Sprint 2!</p>
+                </div>
+            </section>
+
+        </div>
+        
+        <footer>
+            <p>XPro AI Cancer Prediction Project - Sprint 1: Data Readiness</p>
+            <p>by Apps Emplife</p>
+            <p style="margin-top: 1rem;">
+                <a href="index.html">← Back to Curriculum Home</a> | 
+                <a href="Sprint2.html">Continue to Sprint 2 →</a>
+            </p>
+        </footer>
+    </div>
+</body>
+</html>

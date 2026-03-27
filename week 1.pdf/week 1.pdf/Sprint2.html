@@ -1,0 +1,3426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XPro AI Sprint 2 - Model Development Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 30px rgba(0,0,0,0.2);
+        }
+        
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .sprint-badge {
+            display: inline-block;
+            background: #ffc107;
+            color: #1e3c72;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            font-weight: bold;
+            margin-top: 1rem;
+        }
+        
+        nav {
+            background: #2c3e50;
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        
+        nav a:hover {
+            background: #34495e;
+        }
+        
+        .content {
+            padding: 2rem;
+        }
+        
+        section {
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+        }
+        
+        h2 {
+            color: #2c3e50;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        h3 {
+            color: #34495e;
+            font-size: 1.5rem;
+            margin: 1.5rem 0 1rem 0;
+        }
+        
+        h4 {
+            color: #555;
+            font-size: 1.2rem;
+            margin: 1rem 0 0.5rem 0;
+        }
+        
+        .card {
+            background: white;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .highlight {
+            background: #fff3cd;
+            padding: 1rem;
+            border-left: 4px solid #ffc107;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        
+        .important {
+            background: #f8d7da;
+            padding: 1rem;
+            border-left: 4px solid #dc3545;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        
+        .success {
+            background: #d4edda;
+            padding: 1rem;
+            border-left: 4px solid #28a745;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        
+        .info {
+            background: #d1ecf1;
+            padding: 1rem;
+            border-left: 4px solid #17a2b8;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        
+        code {
+            background: #f4f4f4;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #e83e8c;
+            font-size: 0.9em;
+        }
+        
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        
+        pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+        }
+        
+        ul, ol {
+            margin-left: 2rem;
+            margin-top: 0.5rem;
+        }
+        
+        li {
+            margin: 0.5rem 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: white;
+            font-size: 0.95em;
+        }
+        
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+        
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .progress-tracker {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+        
+        .progress-step {
+            display: flex;
+            align-items: center;
+            margin: 1rem 0;
+        }
+        
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .step-number.completed {
+            background: #28a745;
+        }
+        
+        .confusion-matrix-demo {
+            display: grid;
+            grid-template-columns: 120px 1fr 1fr;
+            gap: 0;
+            margin: 2rem auto;
+            max-width: 450px;
+            border: 2px solid #667eea;
+        }
+        
+        .confusion-matrix-demo div {
+            padding: 1rem;
+            border: 1px solid #ddd;
+            text-align: center;
+            font-size: 0.9em;
+        }
+        
+        .confusion-matrix-demo .header {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .confusion-matrix-demo .label {
+            background: #e9ecef;
+            font-weight: bold;
+        }
+        
+        .confusion-matrix-demo .tp, .confusion-matrix-demo .tn {
+            background: #d4edda;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #155724;
+        }
+        
+        .confusion-matrix-demo .fp, .confusion-matrix-demo .fn {
+            background: #f8d7da;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #721c24;
+        }
+        
+        .metric-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            margin: 1rem 0;
+        }
+        
+        .metric-box h4 {
+            color: white;
+            margin: 0 0 0.5rem 0;
+        }
+        
+        .metric-box .value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+            margin: 0.5rem 0.5rem 0.5rem 0;
+        }
+        
+        .btn:hover {
+            background: #5568d3;
+        }
+        
+        footer {
+            background: #2c3e50;
+            color: white;
+            padding: 2rem;
+        }
+        
+        @media print {
+            nav { display: none; }
+            pre { white-space: pre-wrap; }
+        }
+        
+        @media (max-width: 768px) {
+            header h1 { font-size: 1.8rem; }
+            nav ul { flex-direction: column; }
+            .card-grid { grid-template-columns: 1fr; }
+            .confusion-matrix-demo { 
+                grid-template-columns: 80px 1fr 1fr;
+                font-size: 0.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 XPro AI Cancer Prediction Project</h1>
+            <p>Sprint 2: Model Development & Evaluation</p>
+            <div class="sprint-badge">WEEK 3-4</div>
+            <p style="font-size: 0.9rem; margin-top: 1rem;">by Apps Emplife</p>
+        </header>
+        
+        <nav>
+            <ul>
+                <li><a href="#recap">Sprint 1 Recap</a></li>
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#concepts">ML Concepts</a></li>
+                <li><a href="#week3">Week 3</a></li>
+                <li><a href="#week4">Week 4</a></li>
+                <li><a href="#deliverables">Deliverables</a></li>
+                <li><a href="#quiz">Quiz</a></li>
+            </ul>
+        </nav>
+        
+        <div class="content">
+            
+            <!-- SPRINT 1 RECAP SECTION -->
+            <section id="recap">
+                <h2>📚 Sprint 1 Recap: What We Accomplished</h2>
+                
+                <div class="success">
+                    <strong>🎉 Congratulations!</strong> You've completed Sprint 1 and built a solid foundation for machine learning!
+                </div>
+                
+                <div class="progress-tracker">
+                    <h3>Sprint 1 Achievements</h3>
+                    
+                    <div class="progress-step">
+                        <div class="step-number completed">✓</div>
+                        <div>
+                            <strong>Generated 1000 Synthetic Patient Records</strong>
+                            <p>Created realistic clinical data with features like Age, Blood Pressure, Cholesterol, BMI, Smoking status, Family History, and Cancer target variable.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="progress-step">
+                        <div class="step-number completed">✓</div>
+                        <div>
+                            <strong>Introduced and Cleaned Data Anomalies</strong>
+                            <p>Added realistic problems (5% missing values, 20 duplicates, outliers) and cleaned them using IQR method, Z-score, and median imputation techniques.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="progress-step">
+                        <div class="step-number completed">✓</div>
+                        <div>
+                            <strong>Created Technical Documentation</strong>
+                            <p>Drafted System Requirement Specification (SRS) and Project Management Plan with scope, roles, timeline, and agile methodology.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="progress-step">
+                        <div class="step-number completed">✓</div>
+                        <div>
+                            <strong>Validated Clean Dataset</strong>
+                            <p>Ensured data quality with ~950-980 clean records, no missing values, no duplicates, and outliers removed - ready for modeling!</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <h3>What You Should Have Now</h3>
+                <ul>
+                    <li>✅ <code>AI_&lt;TeamName&gt;_CleanedDataset.xlsx</code> - Your clean, validated dataset (most important!)</li>
+                    <li>✅ <code>AI_&lt;TeamName&gt;_DataPrepCode.py</code> - Data generation and cleaning Python script</li>
+                    <li>✅ <code>AI_&lt;TeamName&gt;_SRS.docx</code> - System requirements documentation</li>
+                    <li>✅ <code>XAI_&lt;TeamName&gt;_PM_Plan.docx</code> - Project management plan</li>
+                </ul>
+                
+                <div class="highlight">
+                    <strong>💡 Before Starting Sprint 2:</strong>
+                    <p>Make sure you have your <strong>cleaned dataset</strong> from Sprint 1. We'll be using it extensively to build and train our machine learning model! If you don't have it, go back and complete Sprint 1 first.</p>
+                </div>
+                
+                <div class="info">
+                    <strong>📊 Your Dataset Should Look Like:</strong>
+                    <table style="margin-top: 1rem; font-size: 0.85em;">
+                        <thead>
+                            <tr>
+                                <th>Patient_ID</th>
+                                <th>Age</th>
+                                <th>Gender</th>
+                                <th>Blood_Pressure</th>
+                                <th>Cholesterol</th>
+                                <th>BMI</th>
+                                <th>Smoking</th>
+                                <th>Family_History</th>
+                                <th>Cancer</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1001</td>
+                                <td>45</td>
+                                <td>Male</td>
+                                <td>130.5</td>
+                                <td>210.3</td>
+                                <td>26.8</td>
+                                <td>Yes</td>
+                                <td>No</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>1002</td>
+                                <td>62</td>
+                                <td>Female</td>
+                                <td>145.2</td>
+                                <td>235.7</td>
+                                <td>31.2</td>
+                                <td>No</td>
+                                <td>Yes</td>
+                                <td>1</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            
+            <!-- SPRINT 2 OVERVIEW -->
+            <section id="overview">
+                <h2>🎯 Sprint 2 Overview: Building Your First ML Model</h2>
+                
+                <h3>Objective</h3>
+                <p>Transform your cleaned dataset from Sprint 1 into a working machine learning model that can predict cancer presence with measurable accuracy. This is where the magic happens!</p>
+                
+                <div class="card-grid">
+                    <div class="card">
+                        <h3>🔧 Context</h3>
+                        <p>You've prepared the data - now it's time to build the AI! We'll apply data science techniques to create a <strong>Random Forest classifier</strong> that learns patterns from your clinical data and makes predictions.</p>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>👥 Your Role</h3>
+                        <p>Everyone contributes to feature engineering, model training/testing, and interpreting results. You'll work as <strong>Data Scientists</strong> and <strong>ML Engineers</strong> this sprint.</p>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>🎓 Key Stakeholders</h3>
+                        <ul style="margin-left: 1rem;">
+                            <li>Data Scientist</li>
+                            <li>ML Engineer</li>
+                            <li>Data Engineer</li>
+                            <li>Data Analyst</li>
+                            <li>Project Manager</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <h3>Sprint 2 Goals</h3>
+                
+                <div class="card-grid">
+                    <div class="card">
+                        <h4>🔨 1. Engineer Features</h4>
+                        <p>Transform and create new features to improve model performance. This includes encoding categorical variables (Male/Female → 1/0), scaling numerical features, and creating new combined features.</p>
+                        <p><strong>Example:</strong> Creating a "Risk_Score" by combining smoking, family history, age, and BMI.</p>
+                    </div>
+                    
+                    <div class="card">
+                        <h4>✂️ 2. Split Dataset</h4>
+                        <p>Divide data into training (80%) and testing (20%) subsets. Training data teaches the model, testing data evaluates it honestly on unseen data.</p>
+                        <p><strong>Why?</strong> To prevent "cheating" - testing on training data would be like giving students the exam questions beforehand!</p>
+                    </div>
+                    
+                    <div class="card">
+                        <h4>🤖 3. Train Baseline Model</h4>
+                        <p>Train and evaluate an initial Random Forest machine learning model. Random Forest uses multiple decision trees voting together for better accuracy.</p>
+                        <p><strong>Goal:</strong> Achieve >70% accuracy on test data.</p>
+                    </div>
+                    
+                    <div class="card">
+                        <h4>📊 4. Visualize Results</h4>
+                        <p>Interpret predictions and create clear visualizations: confusion matrix, feature importance chart, ROC curve, and prediction distributions.</p>
+                        <p><strong>Purpose:</strong> Communicate model performance to non-technical stakeholders.</p>
+                    </div>
+                </div>
+                
+                <div class="info">
+                    <strong>🕐 Timeline:</strong> Sprint 2 runs for 2 weeks (Weeks 3-4 of the project)
+                    <ul>
+                        <li><strong>Week 3 (Days 15-21):</strong> Feature Engineering & Data Partitioning</li>
+                        <li><strong>Week 4 (Days 22-28):</strong> Model Training, Evaluation & Interpretation</li>
+                    </ul>
+                </div>
+                
+                <div class="metric-box">
+                    <h4>Project Progress</h4>
+                    <div style="display: flex; justify-content: space-around; margin-top: 1rem;">
+                        <div>
+                            <div class="value">✓</div>
+                            <p style="margin: 0;">Sprint 1<br>Complete</p>
+                        </div>
+                        <div>
+                            <div class="value">→</div>
+                            <p style="margin: 0;">Sprint 2<br>In Progress</p>
+                        </div>
+                        <div>
+                            <div class="value">○</div>
+                            <p style="margin: 0;">Sprint 3<br>Coming Soon</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- ML CONCEPTS SECTION -->
+            <section id="concepts">
+                <h2>🧠 Essential ML Concepts for Sprint 2</h2>
+                
+                <div class="highlight">
+                    <strong>📖 New to These Concepts?</strong>
+                    <p>Don't worry! We'll explain everything step-by-step from scratch. These are the building blocks of machine learning that every data scientist needs to know. By the end of Sprint 2, these will be second nature!</p>
+                </div>
+                
+                <h3>1. Feature Engineering</h3>
+                
+                <div class="card">
+                    <h4>What is Feature Engineering?</h4>
+                    <p>Feature engineering is the process of transforming raw data into features that better represent patterns to the model, improving predictions. It's like giving the model the right "ingredients" to work with.</p>
+                    
+                    <h4>Why is it Important?</h4>
+                    <p><strong>"Garbage in, garbage out."</strong> Even the best ML algorithm can't perform well with poor features. Good feature engineering can improve accuracy by 10-20% or more!</p>
+                    
+                    <h4>Common Techniques:</h4>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Technique</th>
+                                <th>Purpose</th>
+                                <th>Example in Our Project</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>One-Hot Encoding</strong></td>
+                                <td>Convert text categories to numbers</td>
+                                <td>Gender (Male/Female) → Gender_Male (1/0)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Scaling</strong></td>
+                                <td>Bring all features to same scale</td>
+                                <td>Age (18-90) and BP (90-200) → both scaled to similar ranges</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Feature Creation</strong></td>
+                                <td>Combine features for new insights</td>
+                                <td>Smoking + Family_History + Age → Risk_Score</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Binning</strong></td>
+                                <td>Group continuous values into categories</td>
+                                <td>Age (45) → Age_Group (Middle-aged)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="highlight" style="margin-top: 1rem;">
+                        <strong>Real-World Analogy:</strong>
+                        <p>Think of feature engineering like preparing ingredients for cooking. Raw potatoes (raw data) need to be peeled, cut, and seasoned (feature engineering) before cooking (model training) to get the best dish (predictions)!</p>
+                    </div>
+                </div>
+                
+                <h3>2. Train-Test Split</h3>
+                
+                <div class="card">
+                    <h4>What is Train-Test Split?</h4>
+                    <p>Dividing your dataset into two separate parts: one for <strong>training</strong> the model (teaching it patterns) and one for <strong>testing</strong> it (evaluating how well it learned).</p>
+                    
+                    <h4>Why Do We Need It?</h4>
+                    <p>To honestly evaluate how well our model works on <strong>new, unseen data</strong>. Testing on the same data used for training would be like:</p>
+                    <ul>
+                        <li>📚 Giving students the exact exam questions they studied</li>
+                        <li>🎯 Practicing archery on targets you already hit</li>
+                        <li>🧪 Testing a drug on the same patients you developed it with</li>
+                    </ul>
+                    <p>It doesn't tell you how well it will work in the real world!</p>
+                    
+                    <h4>The 80/20 Rule:</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0;">
+                        <div style="background: #d4edda; padding: 1rem; border-radius: 5px;">
+                            <strong>80% Training Data</strong>
+                            <p>Used to teach the model patterns. The model learns relationships between features (Age, BMI, etc.) and the target (Cancer).</p>
+                            <p><strong>Size:</strong> ~760 records</p>
+                        </div>
+                        <div style="background: #fff3cd; padding: 1rem; border-radius: 5px;">
+                            <strong>20% Testing Data</strong>
+                            <p>Used to evaluate model performance on unseen data. The model has never seen these records during training.</p>
+                            <p><strong>Size:</strong> ~190 records</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info">
+                        <strong>Important:</strong> We use <code>stratify</code> parameter to ensure both sets have similar proportions of cancer cases (e.g., if 30% have cancer in full dataset, both train and test will have ~30%).
+                    </div>
+                </div>
+                
+                <h3>3. Random Forest Classifier</h3>
+                
+                <div class="card">
+                    <h4>What is Random Forest?</h4>
+                    <p>An <strong>ensemble learning</strong> algorithm that creates multiple decision trees and combines their predictions. It's like asking 100 doctors for their diagnosis instead of just one - the majority opinion is usually more reliable!</p>
+                    
+                    <h4>How Does it Work?</h4>
+                    <ol>
+                        <li><strong>Create Many Trees:</strong> Build 100+ decision trees, each trained on random subsets of data and random subsets of features</li>
+                        <li><strong>Each Tree Votes:</strong> Each tree independently makes its own prediction (Cancer or No Cancer)</li>
+                        <li><strong>Majority Wins:</strong> The final prediction is what most trees predict
+                            <ul>
+                                <li>If 75 trees say "Cancer" and 25 say "No Cancer" → Final prediction: Cancer</li>
+                            </ul>
+                        </li>
+                    </ol>
+                    
+                    <h4>Why Use Random Forest?</h4>
+                    <ul>
+                        <li>✅ <strong>Handles both numerical and categorical data</strong> naturally</li>
+                        <li>✅ <strong>Resistant to overfitting</strong> because it averages many trees</li>
+                        <li>✅ <strong>Provides feature importance rankings</strong> showing which features matter most</li>
+                        <li>✅ <strong>Works well without extensive tuning</strong> - great for beginners</li>
+                        <li>✅ <strong>High accuracy</strong> on many types of problems</li>
+                        <li>✅ <strong>Robust to outliers and noise</strong> in data</li>
+                    </ul>
+                    
+                    <h4>Key Parameters (We'll Set These):</h4>
+                    <ul>
+                        <li><code>n_estimators=100</code> - Number of trees (more trees = better but slower)</li>
+                        <li><code>max_depth=10</code> - Maximum depth of each tree (prevents overfitting)</li>
+                        <li><code>min_samples_split=5</code> - Minimum samples needed to split a node</li>
+                        <li><code>random_state=42</code> - For reproducible results</li>
+                    </ul>
+                </div>
+                
+                <!-- NEW: Additional Classification Algorithms Section -->
+                <h3>4. Logistic Regression</h3>
+                
+                <div class="card">
+                    <h4>What is Logistic Regression?</h4>
+                    <p>Despite its name, Logistic Regression is a <strong>classification algorithm</strong>, not regression. It predicts the probability that an instance belongs to a particular class using the <strong>sigmoid function</strong>.</p>
+                    
+                    <h4>The Sigmoid Function</h4>
+                    <p>The sigmoid function transforms any input into a value between 0 and 1, perfect for probability:</p>
+                    <div class="info">
+                        <strong>Formula:</strong> σ(z) = 1 / (1 + e<sup>-z</sup>)
+                        <p>Where z = β₀ + β₁x₁ + β₂x₂ + ... + βₙxₙ (linear combination of features)</p>
+                    </div>
+                    
+                    <h4>Implementation on Cancer Dataset</h4>
+                    <pre><code># Logistic Regression for Cancer Prediction
+from sklearn.linear_model import LogisticRegression
+
+# Initialize the model
+log_reg = LogisticRegression(
+    random_state=42,
+    max_iter=1000,        # Maximum iterations for convergence
+    class_weight='balanced'  # Handle class imbalance
+)
+
+# Train the model
+log_reg.fit(X_train, y_train)
+
+# Make predictions
+y_pred_lr = log_reg.predict(X_test)
+y_proba_lr = log_reg.predict_proba(X_test)[:, 1]
+
+# Get coefficients (odds ratios)
+coefficients = pd.DataFrame({
+    'Feature': X_train.columns,
+    'Coefficient': log_reg.coef_[0],
+    'Odds_Ratio': np.exp(log_reg.coef_[0])
+}).sort_values('Coefficient', ascending=False)
+
+print("Feature Coefficients and Odds Ratios:")
+print(coefficients)</code></pre>
+                    
+                    <h4>Understanding Odds Ratios</h4>
+                    <p>Odds ratios tell us how much the odds of cancer change for each unit increase in a feature:</p>
+                    <ul>
+                        <li><strong>Odds Ratio > 1:</strong> Feature increases cancer risk (e.g., OR=2.5 means 2.5x higher odds)</li>
+                        <li><strong>Odds Ratio = 1:</strong> Feature has no effect on cancer risk</li>
+                        <li><strong>Odds Ratio < 1:</strong> Feature decreases cancer risk (protective factor)</li>
+                    </ul>
+                    
+                    <div class="highlight">
+                        <strong>Clinical Example:</strong>
+                        <p>If Smoking has an odds ratio of 3.2, it means smokers have 3.2 times higher odds of cancer compared to non-smokers, holding other factors constant.</p>
+                    </div>
+                    
+                    <h4>Pros and Cons for Medical Applications</h4>
+                    <table>
+                        <thead>
+                            <tr><th>Pros ✅</th><th>Cons ❌</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Highly interpretable - coefficients have clinical meaning</td>
+                                <td>Assumes linear relationship between features and log-odds</td>
+                            </tr>
+                            <tr>
+                                <td>Provides probability scores, not just predictions</td>
+                                <td>May underperform with complex, non-linear patterns</td>
+                            </tr>
+                            <tr>
+                                <td>Fast to train and predict</td>
+                                <td>Sensitive to outliers</td>
+                            </tr>
+                            <tr>
+                                <td>Works well with small datasets</td>
+                                <td>Requires feature scaling for optimal performance</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <h3>5. Decision Trees</h3>
+                
+                <div class="card">
+                    <h4>What is a Decision Tree?</h4>
+                    <p>A Decision Tree is a flowchart-like structure where each internal node represents a "test" on a feature, each branch represents the outcome of the test, and each leaf node represents a class label (Cancer/No Cancer).</p>
+                    
+                    <h4>How Decision Trees Work</h4>
+                    <div class="info">
+                        <strong>Tree Building Process:</strong>
+                        <ol>
+                            <li>Start with all patients at the root node</li>
+                            <li>Find the best feature and threshold to split the data (using Gini impurity or Information Gain)</li>
+                            <li>Create child nodes based on the split</li>
+                            <li>Repeat recursively until stopping criteria are met</li>
+                        </ol>
+                    </div>
+                    
+                    <h4>Visual Example: Cancer Prediction Tree</h4>
+                    <pre style="background: #f8f9fa; color: #333; font-family: monospace; padding: 1rem;">
+                           [Age > 55?]
+                          /          \
+                       Yes            No
+                        |              |
+                  [Smoking?]      [BMI > 30?]
+                   /      \        /       \
+                 Yes      No     Yes       No
+                  |        |       |         |
+              [Cancer]  [Risk]  [Risk]  [No Cancer]
+                         Score   Score
+                    </pre>
+                    
+                    <h4>Implementation with Visualization</h4>
+                    <pre><code># Decision Tree for Cancer Prediction
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+import matplotlib.pyplot as plt
+
+# Initialize Decision Tree
+dt_model = DecisionTreeClassifier(
+    max_depth=5,              # Limit depth to prevent overfitting
+    min_samples_split=10,     # Minimum samples to split
+    min_samples_leaf=5,       # Minimum samples at leaf
+    random_state=42,
+    class_weight='balanced'
+)
+
+# Train the model
+dt_model.fit(X_train, y_train)
+
+# Make predictions
+y_pred_dt = dt_model.predict(X_test)
+
+# Visualize the tree
+plt.figure(figsize=(20, 10))
+plot_tree(dt_model, 
+          feature_names=X_train.columns,
+          class_names=['No Cancer', 'Cancer'],
+          filled=True,
+          rounded=True,
+          fontsize=10)
+plt.title('Decision Tree for Cancer Prediction')
+plt.tight_layout()
+plt.savefig('AI_<TeamName>_DecisionTree.png', dpi=300, bbox_inches='tight')
+plt.show()</code></pre>
+                    
+                    <h4>Pruning Techniques to Prevent Overfitting</h4>
+                    <p>Decision trees can easily overfit by creating very deep trees that memorize training data. Pruning helps prevent this:</p>
+                    
+                    <table>
+                        <thead>
+                            <tr><th>Technique</th><th>Parameter</th><th>Effect</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Max Depth</strong></td>
+                                <td><code>max_depth=5</code></td>
+                                <td>Limits how deep the tree can grow</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Min Samples Split</strong></td>
+                                <td><code>min_samples_split=10</code></td>
+                                <td>Requires minimum samples to create a split</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Min Samples Leaf</strong></td>
+                                <td><code>min_samples_leaf=5</code></td>
+                                <td>Requires minimum samples at each leaf node</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Max Features</strong></td>
+                                <td><code>max_features='sqrt'</code></td>
+                                <td>Limits features considered at each split</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="highlight">
+                        <strong>💡 Clinical Advantage:</strong>
+                        <p>Decision trees are highly interpretable - you can explain exactly why a patient was classified as high-risk by following the path from root to leaf. This is crucial for medical applications where doctors need to understand and trust the model's reasoning.</p>
+                    </div>
+                </div>
+                
+                <h3>6. Support Vector Machines (SVM)</h3>
+                
+                <div class="card">
+                    <h4>What is SVM?</h4>
+                    <p>Support Vector Machine finds the optimal <strong>hyperplane</strong> that best separates classes with the maximum margin. The data points closest to the hyperplane are called <strong>support vectors</strong>.</p>
+                    
+                    <h4>Kernel Concepts</h4>
+                    <p>Kernels allow SVM to handle non-linear relationships by transforming data into higher dimensions:</p>
+                    
+                    <table>
+                        <thead>
+                            <tr><th>Kernel</th><th>Use Case</th><th>Description</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Linear</strong></td>
+                                <td>Linearly separable data</td>
+                                <td>Simple straight line/plane separation</td>
+                            </tr>
+                            <tr>
+                                <td><strong>RBF (Radial Basis Function)</strong></td>
+                                <td>Most common, non-linear data</td>
+                                <td>Creates circular decision boundaries</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Polynomial</strong></td>
+                                <td>Polynomial relationships</td>
+                                <td>Creates curved decision boundaries</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h4>Implementation on Cancer Dataset</h4>
+                    <pre><code># SVM for Cancer Prediction
+from sklearn.svm import SVC
+from sklearn.preprocessing import StandardScaler
+
+# SVM requires scaled features
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Initialize SVM with RBF kernel
+svm_model = SVC(
+    kernel='rbf',           # Radial Basis Function kernel
+    C=1.0,                  # Regularization parameter
+    gamma='scale',          # Kernel coefficient
+    probability=True,       # Enable probability estimates
+    random_state=42,
+    class_weight='balanced'
+)
+
+# Train the model
+svm_model.fit(X_train_scaled, y_train)
+
+# Make predictions
+y_pred_svm = svm_model.predict(X_test_scaled)
+y_proba_svm = svm_model.predict_proba(X_test_scaled)[:, 1]
+
+# Evaluate
+print(f"SVM Accuracy: {accuracy_score(y_test, y_pred_svm):.4f}")</code></pre>
+                    
+                    <h4>When to Use SVM vs Other Algorithms</h4>
+                    <div class="card-grid">
+                        <div class="card" style="border-left: 4px solid #28a745;">
+                            <h4>✅ Use SVM When:</h4>
+                            <ul>
+                                <li>Dataset is small to medium sized</li>
+                                <li>High-dimensional data (many features)</li>
+                                <li>Clear margin of separation exists</li>
+                                <li>Need robust performance with outliers</li>
+                            </ul>
+                        </div>
+                        <div class="card" style="border-left: 4px solid #dc3545;">
+                            <h4>❌ Avoid SVM When:</h4>
+                            <ul>
+                                <li>Very large datasets (slow training)</li>
+                                <li>Need probability estimates (less reliable)</li>
+                                <li>Need interpretable results</li>
+                                <li>Data has lots of noise</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <h3>7. K-Nearest Neighbors (KNN)</h3>
+                
+                <div class="card">
+                    <h4>What is KNN?</h4>
+                    <p>KNN classifies a new patient by finding the K most similar patients in the training data and using their majority class as the prediction. It's based on the principle: <strong>"You are the company you keep."</strong></p>
+                    
+                    <h4>Distance Metrics</h4>
+                    <p>KNN uses distance to measure similarity between patients:</p>
+                    
+                    <table>
+                        <thead>
+                            <tr><th>Metric</th><th>Formula</th><th>Best For</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Euclidean</strong></td>
+                                <td>√(Σ(xᵢ - yᵢ)²)</td>
+                                <td>Continuous features, most common</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Manhattan</strong></td>
+                                <td>Σ|xᵢ - yᵢ|</td>
+                                <td>High-dimensional data, grid-like paths</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Minkowski</strong></td>
+                                <td>(Σ|xᵢ - yᵢ|ᵖ)^(1/p)</td>
+                                <td>Generalization of Euclidean (p=2) and Manhattan (p=1)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h4>K Selection with Cross-Validation</h4>
+                    <pre><code># KNN with optimal K selection
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import cross_val_score
+
+# Find optimal K using cross-validation
+k_range = range(1, 31)
+k_scores = []
+
+for k in k_range:
+    knn = KNeighborsClassifier(n_neighbors=k)
+    scores = cross_val_score(knn, X_train_scaled, y_train, cv=5, scoring='accuracy')
+    k_scores.append(scores.mean())
+
+# Find best K
+optimal_k = k_range[np.argmax(k_scores)]
+print(f"Optimal K: {optimal_k}")
+
+# Plot K vs Accuracy
+plt.figure(figsize=(10, 6))
+plt.plot(k_range, k_scores, marker='o')
+plt.xlabel('K (Number of Neighbors)')
+plt.ylabel('Cross-Validation Accuracy')
+plt.title('KNN: Finding Optimal K')
+plt.axvline(x=optimal_k, color='r', linestyle='--', label=f'Optimal K={optimal_k}')
+plt.legend()
+plt.grid(True, alpha=0.3)
+plt.savefig('AI_<TeamName>_KNN_Optimization.png', dpi=300)
+plt.show()
+
+# Train final model with optimal K
+knn_model = KNeighborsClassifier(n_neighbors=optimal_k, metric='euclidean')
+knn_model.fit(X_train_scaled, y_train)
+y_pred_knn = knn_model.predict(X_test_scaled)</code></pre>
+                    
+                    <h4>Patient Similarity Interpretation</h4>
+                    <div class="highlight">
+                        <strong>Clinical Interpretation:</strong>
+                        <p>When KNN predicts a patient has cancer, it's saying: "This patient is most similar to K other patients who had cancer." This is intuitive for doctors - they often make diagnoses by comparing to similar cases they've seen before.</p>
+                        <p><strong>Example:</strong> If K=5 and 4 of the 5 most similar patients had cancer, the model predicts cancer with 80% confidence.</p>
+                    </div>
+                </div>
+                
+                <h3>8. Naive Bayes</h3>
+                
+                <div class="card">
+                    <h4>What is Naive Bayes?</h4>
+                    <p>Naive Bayes is a probabilistic classifier based on <strong>Bayes' Theorem</strong> with the "naive" assumption that features are independent of each other.</p>
+                    
+                    <h4>Bayes' Theorem</h4>
+                    <div class="info">
+                        <strong>Formula:</strong> P(Cancer|Features) = P(Features|Cancer) × P(Cancer) / P(Features)
+                        <ul>
+                            <li><strong>P(Cancer|Features):</strong> Probability of cancer given patient features (what we want)</li>
+                            <li><strong>P(Features|Cancer):</strong> Probability of seeing these features in cancer patients</li>
+                            <li><strong>P(Cancer):</strong> Prior probability of cancer in the population</li>
+                            <li><strong>P(Features):</strong> Probability of seeing these features overall</li>
+                        </ul>
+                    </div>
+                    
+                    <h4>Independence Assumption Discussion</h4>
+                    <div class="important">
+                        <strong>⚠️ The "Naive" Assumption:</strong>
+                        <p>Naive Bayes assumes all features are independent, which is rarely true in medical data. For example:</p>
+                        <ul>
+                            <li>BMI and Blood Pressure are often correlated</li>
+                            <li>Age and Cholesterol tend to increase together</li>
+                            <li>Smoking and Family History may interact</li>
+                        </ul>
+                        <p>Despite this unrealistic assumption, Naive Bayes often performs surprisingly well in practice!</p>
+                    </div>
+                    
+                    <h4>Implementation and Comparison</h4>
+                    <pre><code># Naive Bayes for Cancer Prediction
+from sklearn.naive_bayes import GaussianNB
+
+# Initialize Gaussian Naive Bayes (for continuous features)
+nb_model = GaussianNB()
+
+# Train the model
+nb_model.fit(X_train, y_train)
+
+# Make predictions
+y_pred_nb = nb_model.predict(X_test)
+y_proba_nb = nb_model.predict_proba(X_test)[:, 1]
+
+# Evaluate
+print(f"Naive Bayes Accuracy: {accuracy_score(y_test, y_pred_nb):.4f}")
+print(f"Naive Bayes Precision: {precision_score(y_test, y_pred_nb):.4f}")
+print(f"Naive Bayes Recall: {recall_score(y_test, y_pred_nb):.4f}")</code></pre>
+                    
+                    <h4>When to Use Naive Bayes</h4>
+                    <ul>
+                        <li>✅ Fast training and prediction - great for real-time applications</li>
+                        <li>✅ Works well with small training datasets</li>
+                        <li>✅ Handles high-dimensional data efficiently</li>
+                        <li>✅ Good baseline model to compare against</li>
+                        <li>❌ May underperform when features are highly correlated</li>
+                    </ul>
+                </div>
+                
+                <h3>9. Gradient Boosting (XGBoost & LightGBM)</h3>
+                
+                <div class="card">
+                    <h4>What is Gradient Boosting?</h4>
+                    <p>Gradient Boosting builds an ensemble of weak learners (usually decision trees) <strong>sequentially</strong>, where each new tree corrects the errors of the previous ones. It's one of the most powerful algorithms for structured data.</p>
+                    
+                    <h4>XGBoost vs LightGBM</h4>
+                    <table>
+                        <thead>
+                            <tr><th>Feature</th><th>XGBoost</th><th>LightGBM</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Speed</strong></td>
+                                <td>Fast</td>
+                                <td>Faster (especially on large data)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Memory</strong></td>
+                                <td>Higher usage</td>
+                                <td>More efficient</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Tree Growth</strong></td>
+                                <td>Level-wise (balanced)</td>
+                                <td>Leaf-wise (can be deeper)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Best For</strong></td>
+                                <td>General purpose, competitions</td>
+                                <td>Large datasets, speed-critical</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h4>Implementation with Basic Parameters</h4>
+                    <pre><code># XGBoost for Cancer Prediction
+# Install: pip install xgboost
+from xgboost import XGBClassifier
+
+# Initialize XGBoost
+xgb_model = XGBClassifier(
+    n_estimators=100,         # Number of boosting rounds
+    max_depth=5,              # Maximum tree depth
+    learning_rate=0.1,        # Step size shrinkage
+    subsample=0.8,            # Fraction of samples per tree
+    colsample_bytree=0.8,     # Fraction of features per tree
+    random_state=42,
+    use_label_encoder=False,
+    eval_metric='logloss'
+)
+
+# Train the model
+xgb_model.fit(X_train, y_train)
+
+# Make predictions
+y_pred_xgb = xgb_model.predict(X_test)
+y_proba_xgb = xgb_model.predict_proba(X_test)[:, 1]
+
+print(f"XGBoost Accuracy: {accuracy_score(y_test, y_pred_xgb):.4f}")
+
+# LightGBM Alternative
+# Install: pip install lightgbm
+from lightgbm import LGBMClassifier
+
+lgbm_model = LGBMClassifier(
+    n_estimators=100,
+    max_depth=5,
+    learning_rate=0.1,
+    random_state=42,
+    verbose=-1
+)
+
+lgbm_model.fit(X_train, y_train)
+y_pred_lgbm = lgbm_model.predict(X_test)
+print(f"LightGBM Accuracy: {accuracy_score(y_test, y_pred_lgbm):.4f}")</code></pre>
+                    
+                    <h4>Performance Comparison with Random Forest</h4>
+                    <div class="highlight">
+                        <strong>Key Differences:</strong>
+                        <ul>
+                            <li><strong>Random Forest:</strong> Trees are built independently in parallel → faster training</li>
+                            <li><strong>Gradient Boosting:</strong> Trees are built sequentially, each correcting previous errors → often higher accuracy</li>
+                            <li><strong>Trade-off:</strong> Gradient Boosting typically achieves 1-3% higher accuracy but requires more careful tuning to avoid overfitting</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <h3>10. Algorithm Comparison Summary</h3>
+                
+                <div class="card">
+                    <h4>Side-by-Side Comparison of All 7 Algorithms</h4>
+                    
+                    <table style="font-size: 0.85em;">
+                        <thead>
+                            <tr>
+                                <th>Algorithm</th>
+                                <th>Accuracy</th>
+                                <th>Training Speed</th>
+                                <th>Interpretability</th>
+                                <th>Best Use Case</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Logistic Regression</strong></td>
+                                <td>75-85%</td>
+                                <td>⚡ Very Fast</td>
+                                <td>⭐⭐⭐⭐⭐ Excellent</td>
+                                <td>Baseline, interpretable results needed</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Decision Tree</strong></td>
+                                <td>70-80%</td>
+                                <td>⚡ Fast</td>
+                                <td>⭐⭐⭐⭐⭐ Excellent</td>
+                                <td>Explainable AI, rule extraction</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Random Forest</strong></td>
+                                <td>80-90%</td>
+                                <td>⚡⚡ Medium</td>
+                                <td>⭐⭐⭐ Good</td>
+                                <td>General purpose, feature importance</td>
+                            </tr>
+                            <tr>
+                                <td><strong>SVM</strong></td>
+                                <td>80-88%</td>
+                                <td>⚡⚡⚡ Slow</td>
+                                <td>⭐⭐ Limited</td>
+                                <td>High-dimensional data, clear margins</td>
+                            </tr>
+                            <tr>
+                                <td><strong>KNN</strong></td>
+                                <td>75-85%</td>
+                                <td>⚡ Fast (train) / ⚡⚡⚡ Slow (predict)</td>
+                                <td>⭐⭐⭐⭐ Good</td>
+                                <td>Similar case retrieval, small datasets</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Naive Bayes</strong></td>
+                                <td>70-80%</td>
+                                <td>⚡ Very Fast</td>
+                                <td>⭐⭐⭐⭐ Good</td>
+                                <td>Baseline, probabilistic interpretation</td>
+                            </tr>
+                            <tr>
+                                <td><strong>XGBoost/LightGBM</strong></td>
+                                <td>82-92%</td>
+                                <td>⚡⚡ Medium</td>
+                                <td>⭐⭐⭐ Good</td>
+                                <td>Maximum accuracy, competitions</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h4>Code to Compare All Algorithms</h4>
+                    <pre><code># Compare all algorithms on cancer dataset
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.svm import SVC
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.naive_bayes import GaussianNB
+from xgboost import XGBClassifier
+import time
+
+# Define models
+models = {
+    'Logistic Regression': LogisticRegression(random_state=42, max_iter=1000),
+    'Decision Tree': DecisionTreeClassifier(max_depth=5, random_state=42),
+    'Random Forest': RandomForestClassifier(n_estimators=100, random_state=42),
+    'SVM': SVC(kernel='rbf', probability=True, random_state=42),
+    'KNN': KNeighborsClassifier(n_neighbors=5),
+    'Naive Bayes': GaussianNB(),
+    'XGBoost': XGBClassifier(n_estimators=100, random_state=42, use_label_encoder=False, eval_metric='logloss')
+}
+
+# Compare performance
+results = []
+for name, model in models.items():
+    start_time = time.time()
+    model.fit(X_train_scaled, y_train)
+    train_time = time.time() - start_time
+    
+    y_pred = model.predict(X_test_scaled)
+    
+    results.append({
+        'Model': name,
+        'Accuracy': accuracy_score(y_test, y_pred),
+        'Precision': precision_score(y_test, y_pred),
+        'Recall': recall_score(y_test, y_pred),
+        'F1-Score': f1_score(y_test, y_pred),
+        'Train Time (s)': train_time
+    })
+
+# Display results
+comparison_df = pd.DataFrame(results).sort_values('Accuracy', ascending=False)
+print("\n📊 Algorithm Comparison Results:")
+print(comparison_df.to_string(index=False))
+
+# Save comparison
+comparison_df.to_excel('AI_<TeamName>_AlgorithmComparison.xlsx', index=False)</code></pre>
+                    
+                    <div class="success">
+                        <strong>💡 Recommendation for Cancer Prediction:</strong>
+                        <p>Start with <strong>Random Forest</strong> or <strong>XGBoost</strong> for best accuracy. Use <strong>Logistic Regression</strong> when you need to explain predictions to doctors. Use <strong>Decision Trees</strong> when you need clear, rule-based explanations for patients.</p>
+                    </div>
+                </div>
+                
+                <!-- END: Additional Classification Algorithms Section -->
+                
+                <h3>11. Model Evaluation Metrics</h3>
+                
+                <div class="card">
+                    <h4>How Do We Know if Our Model is Good?</h4>
+                    <p>We use various metrics to measure different aspects of performance. Each metric tells us something different!</p>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Metric</th>
+                                <th>What It Measures</th>
+                                <th>Formula</th>
+                                <th>Good Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Accuracy</strong></td>
+                                <td>Overall correctness - what % of predictions were right?</td>
+                                <td>(TP + TN) / Total</td>
+                                <td>> 80%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Precision</strong></td>
+                                <td>Of positive predictions, how many were actually correct?</td>
+                                <td>TP / (TP + FP)</td>
+                                <td>> 75%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Recall</strong></td>
+                                <td>Of actual positives, how many did we catch?</td>
+                                <td>TP / (TP + FN)</td>
+                                <td>> 75%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>F1-Score</strong></td>
+                                <td>Harmonic mean of Precision and Recall</td>
+                                <td>2 × (P × R) / (P + R)</td>
+                                <td>> 75%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="highlight" style="margin-top: 1rem;">
+                        <strong>Simple Example:</strong>
+                        <p>Model tested on 100 patients:</p>
+                        <ul>
+                            <li>85 predictions correct → <strong>Accuracy = 85%</strong></li>
+                            <li>Of 40 predicted cancer cases, 32 actually had cancer → <strong>Precision = 80%</strong></li>
+                            <li>Of 35 actual cancer cases, caught 32 → <strong>Recall = 91%</strong></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <h3>5. Confusion Matrix</h3>
+                
+                <div class="card">
+                    <h4>What is a Confusion Matrix?</h4>
+                    <p>A table that shows the four possible outcomes when your model makes predictions. It's called "confusion" because it shows where the model gets confused!</p>
+                    
+                    <h4>Understanding the Four Outcomes:</h4>
+                    
+                    <div class="confusion-matrix-demo">
+                        <div></div>
+                        <div class="header">Predicted:<br>No Cancer</div>
+                        <div class="header">Predicted:<br>Cancer</div>
+                        
+                        <div class="label">Actual:<br>No Cancer</div>
+                        <div class="tn">TN = 120<br>True Negative<br>✓ Correct</div>
+                        <div class="fp">FP = 15<br>False Positive<br>✗ Type I Error</div>
+                        
+                        <div class="label">Actual:<br>Cancer</div>
+                        <div class="fn">FN = 5<br>False Negative<br>✗ Type II Error</div>
+                        <div class="tp">TP = 60<br>True Positive<br>✓ Correct</div>
+                    </div>
+                    
+                    <ul>
+                        <li><strong>True Positive (TP = 60):</strong> Model predicted cancer, patient actually has cancer ✓ <em>Good!</em></li>
+                        <li><strong>True Negative (TN = 120):</strong> Model predicted no cancer, patient is actually healthy ✓ <em>Good!</em></li>
+                        <li><strong>False Positive (FP = 15):</strong> Model predicted cancer, but patient is healthy ✗ <em>False alarm</em></li>
+                        <li><strong>False Negative (FN = 5):</strong> Model predicted healthy, but patient has cancer ✗ <em>Missed diagnosis - DANGEROUS!</em></li>
+                    </ul>
+                    
+                    <div class="important">
+                        <strong>⚠️ In Healthcare: False Negatives are Most Dangerous!</strong>
+                        <p>A False Positive means unnecessary additional testing (inconvenient but safe). A False Negative means missing an actual cancer case (potentially life-threatening). This is why we prioritize <strong>Recall</strong> in medical applications.</p>
+                    </div>
+                    
+                    <p style="margin-top: 1rem;"><strong>From this example:</strong></p>
+                    <ul>
+                        <li>Accuracy = (TP + TN) / Total = (60 + 120) / 200 = 90%</li>
+                        <li>Precision = TP / (TP + FP) = 60 / (60 + 15) = 80%</li>
+                        <li>Recall = TP / (TP + FN) = 60 / (60 + 5) = 92%</li>
+                    </ul>
+                </div>
+                
+                <h3>6. Overfitting vs Underfitting</h3>
+                
+                <div class="card-grid">
+                    <div class="card" style="border: 3px solid #28a745;">
+                        <h4>🎯 Perfect Fit (GOAL)</h4>
+                        <ul>
+                            <li>✓ Learns real patterns from data</li>
+                            <li>✓ High training accuracy (85-95%)</li>
+                            <li>✓ High testing accuracy (80-90%)</li>
+                            <li>✓ Small gap between train/test</li>
+                            <li>✓ Generalizes well to new data</li>
+                        </ul>
+                        <p><strong>Example:</strong> Train: 88%, Test: 85%</p>
+                    </div>
+                    
+                    <div class="card" style="border: 3px solid #dc3545;">
+                        <h4>📚 Overfitting (BAD)</h4>
+                        <ul>
+                            <li>✗ Memorizes training data</li>
+                            <li>✗ Very high training accuracy (>95%)</li>
+                            <li>✗ Low testing accuracy (<75%)</li>
+                            <li>✗ Large gap between train/test</li>
+                            <li>✗ Doesn't generalize</li>
+                        </ul>
+                        <p><strong>Example:</strong> Train: 98%, Test: 65%</p>
+                        <p><em>Like memorizing answers without understanding concepts!</em></p>
+                    </div>
+                    
+                    <div class="card" style="border: 3px solid #ffc107;">
+                        <h4>🤷 Underfitting (BAD)</h4>
+                        <ul>
+                            <li>✗ Too simple, misses patterns</li>
+                            <li>✗ Low training accuracy (<75%)</li>
+                            <li>✗ Low testing accuracy (<75%)</li>
+                            <li>✗ Both scores are poor</li>
+                            <li>✗ Model is too basic</li>
+                        </ul>
+                        <p><strong>Example:</strong> Train: 65%, Test: 63%</p>
+                        <p><em>Like not studying enough for an exam!</em></p>
+                    </div>
+                </div>
+                
+                <div class="info">
+                    <strong>Rule of Thumb:</strong> If training accuracy is more than 10% higher than testing accuracy, you likely have overfitting. If both are low, you have underfitting.
+                </div>
+                
+                <!-- NEW: Cross-Validation Deep Dive Section -->
+                <h3>17. Cross-Validation Deep Dive</h3>
+                
+                <div class="card">
+                    <h4>Why Cross-Validation?</h4>
+                    <p>A single train-test split can give misleading results depending on which data ends up in each set. <strong>Cross-validation</strong> provides a more robust estimate of model performance by testing on multiple different subsets.</p>
+                    
+                    <h4>K-Fold Cross-Validation</h4>
+                    <p>K-Fold splits the data into K equal parts (folds). The model is trained K times, each time using a different fold as the test set and the remaining K-1 folds as training data.</p>
+                    
+                    <div class="info">
+                        <strong>Example with K=5:</strong>
+                        <ul>
+                            <li>Fold 1: Train on folds 2,3,4,5 → Test on fold 1</li>
+                            <li>Fold 2: Train on folds 1,3,4,5 → Test on fold 2</li>
+                            <li>Fold 3: Train on folds 1,2,4,5 → Test on fold 3</li>
+                            <li>Fold 4: Train on folds 1,2,3,5 → Test on fold 4</li>
+                            <li>Fold 5: Train on folds 1,2,3,4 → Test on fold 5</li>
+                        </ul>
+                        <p>Final score = Average of all 5 test scores</p>
+                    </div>
+                    
+                    <h4>K-Fold Implementation Code</h4>
+                    <pre><code># K-Fold Cross-Validation
+from sklearn.model_selection import KFold, cross_val_score
+from sklearn.ensemble import RandomForestClassifier
+
+# Initialize model
+rf_model = RandomForestClassifier(n_estimators=100, random_state=42)
+
+# Standard K-Fold (K=5)
+kfold = KFold(n_splits=5, shuffle=True, random_state=42)
+
+# Perform cross-validation
+cv_scores = cross_val_score(rf_model, X, y, cv=kfold, scoring='accuracy')
+
+print("K-Fold Cross-Validation Results:")
+print(f"  Fold scores: {cv_scores}")
+print(f"  Mean accuracy: {cv_scores.mean():.4f}")
+print(f"  Std deviation: {cv_scores.std():.4f}")
+print(f"  95% CI: {cv_scores.mean():.4f} (+/- {cv_scores.std() * 2:.4f})")</code></pre>
+                    
+                    <h4>Stratified K-Fold (Recommended for Medical Data)</h4>
+                    <p><strong>Stratified K-Fold</strong> ensures each fold has the same proportion of cancer cases as the original dataset. This is crucial for imbalanced medical data!</p>
+                    
+                    <pre><code># Stratified K-Fold Cross-Validation
+from sklearn.model_selection import StratifiedKFold, cross_val_score
+
+# Stratified K-Fold maintains class distribution in each fold
+stratified_kfold = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+
+# Perform stratified cross-validation
+stratified_scores = cross_val_score(rf_model, X, y, cv=stratified_kfold, scoring='accuracy')
+
+print("\nStratified K-Fold Cross-Validation Results:")
+print(f"  Fold scores: {stratified_scores}")
+print(f"  Mean accuracy: {stratified_scores.mean():.4f}")
+print(f"  Std deviation: {stratified_scores.std():.4f}")
+
+# Compare multiple metrics
+from sklearn.model_selection import cross_validate
+
+scoring = ['accuracy', 'precision', 'recall', 'f1', 'roc_auc']
+cv_results = cross_validate(rf_model, X, y, cv=stratified_kfold, scoring=scoring)
+
+print("\nMultiple Metrics Cross-Validation:")
+for metric in scoring:
+    scores = cv_results[f'test_{metric}']
+    print(f"  {metric:12s}: {scores.mean():.4f} (+/- {scores.std()*2:.4f})")</code></pre>
+                    
+                    <h4>Interpreting Cross-Validation Scores</h4>
+                    <table>
+                        <thead>
+                            <tr><th>Scenario</th><th>Interpretation</th><th>Action</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>High mean, low std</td>
+                                <td>Model is stable and performs consistently</td>
+                                <td>✅ Good to proceed</td>
+                            </tr>
+                            <tr>
+                                <td>High mean, high std</td>
+                                <td>Model is sensitive to data splits</td>
+                                <td>⚠️ Need more data or simpler model</td>
+                            </tr>
+                            <tr>
+                                <td>Low mean, low std</td>
+                                <td>Model consistently underperforms</td>
+                                <td>❌ Try different algorithm or features</td>
+                            </tr>
+                            <tr>
+                                <td>Low mean, high std</td>
+                                <td>Model is unstable and unreliable</td>
+                                <td>❌ Major issues - revisit approach</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- NEW: Precision-Recall Curves Section -->
+                <h3>18. Precision-Recall Curves</h3>
+                
+                <div class="card">
+                    <h4>When to Use PR Curves vs ROC Curves</h4>
+                    <p>Both curves help evaluate classifier performance, but they're suited for different situations:</p>
+                    
+                    <table>
+                        <thead>
+                            <tr><th>Curve</th><th>Best For</th><th>Why</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>ROC Curve</strong></td>
+                                <td>Balanced datasets</td>
+                                <td>Uses True Negative Rate, which can be misleading with imbalanced data</td>
+                            </tr>
+                            <tr>
+                                <td><strong>PR Curve</strong></td>
+                                <td>Imbalanced datasets (like cancer prediction)</td>
+                                <td>Focuses on positive class performance, ignores true negatives</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="important">
+                        <strong>⚠️ For Cancer Prediction:</strong>
+                        <p>Since cancer cases are typically rare (imbalanced data), <strong>Precision-Recall curves are more informative</strong> than ROC curves. A model that predicts "No Cancer" for everyone would have high ROC-AUC but terrible PR-AUC.</p>
+                    </div>
+                    
+                    <h4>Implementation and Interpretation</h4>
+                    <pre><code># Precision-Recall Curve
+from sklearn.metrics import precision_recall_curve, average_precision_score
+import matplotlib.pyplot as plt
+
+# Get prediction probabilities
+y_proba = rf_model.predict_proba(X_test)[:, 1]
+
+# Calculate precision-recall curve
+precision, recall, thresholds = precision_recall_curve(y_test, y_proba)
+
+# Calculate Average Precision (area under PR curve)
+avg_precision = average_precision_score(y_test, y_proba)
+
+# Plot PR Curve
+plt.figure(figsize=(10, 6))
+plt.plot(recall, precision, linewidth=2, label=f'PR Curve (AP = {avg_precision:.3f})')
+plt.axhline(y=y_test.mean(), color='r', linestyle='--', 
+            label=f'Baseline (prevalence = {y_test.mean():.3f})')
+plt.xlabel('Recall (Sensitivity)', fontsize=12, fontweight='bold')
+plt.ylabel('Precision', fontsize=12, fontweight='bold')
+plt.title('Precision-Recall Curve - Cancer Prediction', fontsize=14, fontweight='bold')
+plt.legend(loc='best')
+plt.grid(True, alpha=0.3)
+plt.xlim([0, 1])
+plt.ylim([0, 1])
+plt.savefig('AI_TeamName_PR_Curve.png', dpi=300, bbox_inches='tight')
+plt.show()
+
+print(f"Average Precision Score: {avg_precision:.4f}")</code></pre>
+                    
+                    <h4>Threshold Selection for Medical Applications</h4>
+                    <p>The default threshold of 0.5 may not be optimal for cancer screening. We can adjust the threshold based on clinical priorities:</p>
+                    
+                    <pre><code># Find optimal threshold based on different criteria
+from sklearn.metrics import f1_score
+
+# Method 1: Maximize F1-Score
+f1_scores = []
+for threshold in thresholds:
+    y_pred_thresh = (y_proba >= threshold).astype(int)
+    f1_scores.append(f1_score(y_test, y_pred_thresh))
+
+optimal_threshold_f1 = thresholds[np.argmax(f1_scores)]
+print(f"Optimal threshold (max F1): {optimal_threshold_f1:.3f}")
+
+# Method 2: Prioritize Recall (minimize missed cancers)
+# Find threshold where recall >= 0.95
+high_recall_idx = np.where(recall >= 0.95)[0]
+if len(high_recall_idx) > 0:
+    optimal_threshold_recall = thresholds[high_recall_idx[-1]]
+    print(f"Threshold for 95% recall: {optimal_threshold_recall:.3f}")
+
+# Apply custom threshold
+custom_threshold = 0.3  # Lower threshold = higher recall
+y_pred_custom = (y_proba >= custom_threshold).astype(int)
+print(f"\nWith threshold = {custom_threshold}:")
+print(f"  Precision: {precision_score(y_test, y_pred_custom):.4f}")
+print(f"  Recall: {recall_score(y_test, y_pred_custom):.4f}")</code></pre>
+                    
+                    <div class="highlight">
+                        <strong>💡 Clinical Decision:</strong>
+                        <p>For cancer screening, we typically prefer <strong>higher recall</strong> (catching more true cancers) even at the cost of lower precision (more false alarms). A false alarm leads to additional testing, but a missed cancer can be fatal.</p>
+                    </div>
+                </div>
+                
+                <!-- NEW: Learning Curves Section -->
+                <h3>19. Learning Curves</h3>
+                
+                <div class="card">
+                    <h4>Diagnosing Overfitting vs Underfitting</h4>
+                    <p>Learning curves show how model performance changes as training data increases. They help diagnose whether your model needs more data, more features, or a different algorithm.</p>
+                    
+                    <h4>Implementation with Visualization</h4>
+                    <pre><code># Learning Curves
+from sklearn.model_selection import learning_curve
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Generate learning curve data
+train_sizes, train_scores, test_scores = learning_curve(
+    rf_model, X, y,
+    train_sizes=np.linspace(0.1, 1.0, 10),  # 10% to 100% of data
+    cv=5,                                     # 5-fold cross-validation
+    scoring='accuracy',
+    n_jobs=-1,
+    random_state=42
+)
+
+# Calculate mean and std
+train_mean = train_scores.mean(axis=1)
+train_std = train_scores.std(axis=1)
+test_mean = test_scores.mean(axis=1)
+test_std = test_scores.std(axis=1)
+
+# Plot learning curves
+plt.figure(figsize=(10, 6))
+plt.plot(train_sizes, train_mean, 'o-', color='#667eea', label='Training Score')
+plt.plot(train_sizes, test_mean, 'o-', color='#ffc107', label='Cross-Validation Score')
+
+# Add confidence intervals
+plt.fill_between(train_sizes, train_mean - train_std, train_mean + train_std, 
+                 alpha=0.1, color='#667eea')
+plt.fill_between(train_sizes, test_mean - test_std, test_mean + test_std, 
+                 alpha=0.1, color='#ffc107')
+
+plt.xlabel('Training Set Size', fontsize=12, fontweight='bold')
+plt.ylabel('Accuracy Score', fontsize=12, fontweight='bold')
+plt.title('Learning Curves - Random Forest', fontsize=14, fontweight='bold')
+plt.legend(loc='lower right')
+plt.grid(True, alpha=0.3)
+plt.ylim([0.5, 1.05])
+plt.savefig('AI_TeamName_LearningCurves.png', dpi=300, bbox_inches='tight')
+plt.show()</code></pre>
+                    
+                    <h4>Interpreting Learning Curves</h4>
+                    <div class="card-grid">
+                        <div class="card" style="border-left: 4px solid #28a745;">
+                            <h4>✅ Good Fit</h4>
+                            <p><strong>Pattern:</strong> Both curves converge to high score with small gap</p>
+                            <p><strong>Action:</strong> Model is working well!</p>
+                        </div>
+                        <div class="card" style="border-left: 4px solid #dc3545;">
+                            <h4>❌ Overfitting</h4>
+                            <p><strong>Pattern:</strong> Training score high, validation score low, large gap</p>
+                            <p><strong>Action:</strong> Simplify model, add regularization, get more data</p>
+                        </div>
+                        <div class="card" style="border-left: 4px solid #ffc107;">
+                            <h4>⚠️ Underfitting</h4>
+                            <p><strong>Pattern:</strong> Both scores are low and converge</p>
+                            <p><strong>Action:</strong> Use more complex model, add features</p>
+                        </div>
+                        <div class="card" style="border-left: 4px solid #17a2b8;">
+                            <h4>📈 Need More Data</h4>
+                            <p><strong>Pattern:</strong> Curves still improving at max training size</p>
+                            <p><strong>Action:</strong> Collect more training data</p>
+                        </div>
+                    </div>
+                    
+                    <h4>Remediation Strategies</h4>
+                    <table>
+                        <thead>
+                            <tr><th>Problem</th><th>Solutions</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Overfitting</strong></td>
+                                <td>
+                                    <ul>
+                                        <li>Reduce model complexity (fewer trees, shallower depth)</li>
+                                        <li>Add regularization (L1/L2 penalties)</li>
+                                        <li>Use dropout or early stopping</li>
+                                        <li>Get more training data</li>
+                                        <li>Remove noisy features</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Underfitting</strong></td>
+                                <td>
+                                    <ul>
+                                        <li>Increase model complexity (more trees, deeper)</li>
+                                        <li>Add more features or engineer new ones</li>
+                                        <li>Reduce regularization</li>
+                                        <li>Try more powerful algorithms (XGBoost)</li>
+                                        <li>Train longer (more iterations)</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- NEW: Data Leakage Prevention Section -->
+                <h3>20. Data Leakage Prevention</h3>
+                
+                <div class="card">
+                    <h4>What is Data Leakage?</h4>
+                    <p><strong>Data leakage</strong> occurs when information from outside the training dataset is used to create the model, leading to overly optimistic performance estimates that don't generalize to real-world data.</p>
+                    
+                    <div class="important">
+                        <strong>⚠️ Data Leakage is Dangerous!</strong>
+                        <p>A model with data leakage might show 99% accuracy in testing but fail completely in production. In medical applications, this could lead to misdiagnosis and patient harm.</p>
+                    </div>
+                    
+                    <h4>Common Leakage Scenarios</h4>
+                    <table>
+                        <thead>
+                            <tr><th>Scenario</th><th>Example</th><th>Why It's Leakage</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Target Leakage</strong></td>
+                                <td>Using "Treatment_Type" to predict cancer</td>
+                                <td>Treatment is assigned AFTER diagnosis - not available at prediction time</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Train-Test Contamination</strong></td>
+                                <td>Scaling data before splitting</td>
+                                <td>Test data statistics influence training data transformation</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Temporal Leakage</strong></td>
+                                <td>Using future lab results to predict current diagnosis</td>
+                                <td>Future information not available at prediction time</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Duplicate Leakage</strong></td>
+                                <td>Same patient in both train and test sets</td>
+                                <td>Model memorizes specific patients instead of learning patterns</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h4>How to Avoid Leakage in Medical ML</h4>
+                    <pre><code># WRONG: Scaling before split (causes leakage!)
+# scaler.fit_transform(X)  # DON'T DO THIS
+# X_train, X_test = train_test_split(X, ...)
+
+# CORRECT: Split first, then scale
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Fit scaler ONLY on training data
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)  # fit AND transform
+X_test_scaled = scaler.transform(X_test)        # ONLY transform (no fit!)
+
+# WRONG: Feature engineering on full dataset
+# df['Risk_Score'] = calculate_risk(df)  # DON'T DO THIS before split
+
+# CORRECT: Feature engineering after split
+# Or use Pipeline to ensure proper order</code></pre>
+                    
+                    <h4>Using Pipelines to Prevent Leakage</h4>
+                    <pre><code># Pipelines automatically prevent train-test leakage
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestClassifier
+
+# Create pipeline
+pipeline = Pipeline([
+    ('scaler', StandardScaler()),
+    ('classifier', RandomForestClassifier(n_estimators=100, random_state=42))
+])
+
+# Pipeline ensures scaler is fit only on training data during cross-validation
+from sklearn.model_selection import cross_val_score
+cv_scores = cross_val_score(pipeline, X, y, cv=5, scoring='accuracy')
+print(f"CV Accuracy (no leakage): {cv_scores.mean():.4f}")</code></pre>
+                    
+                    <h4>Leakage Detection Checklist</h4>
+                    <div class="success">
+                        <strong>✅ Before Training, Verify:</strong>
+                        <ul>
+                            <li>☐ All features are available at prediction time (no future information)</li>
+                            <li>☐ No features derived from the target variable</li>
+                            <li>☐ Train-test split done BEFORE any preprocessing</li>
+                            <li>☐ No duplicate patients across train/test sets</li>
+                            <li>☐ Cross-validation uses proper data isolation</li>
+                            <li>☐ Feature engineering uses only training data statistics</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- NEW: Clinical Context Section -->
+                <h3>21. Clinical Context: Why Metrics Matter in Healthcare</h3>
+                
+                <div class="card">
+                    <h4>Why Recall Matters for Cancer Screening</h4>
+                    <p>In cancer screening, <strong>Recall (Sensitivity)</strong> is often the most critical metric because:</p>
+                    
+                    <div class="important">
+                        <strong>The Cost of Missing Cancer (False Negative):</strong>
+                        <ul>
+                            <li>Delayed diagnosis → Cancer progresses to later stage</li>
+                            <li>Reduced treatment options</li>
+                            <li>Lower survival rates</li>
+                            <li>Patient and family trauma</li>
+                            <li>Potential malpractice liability</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="highlight">
+                        <strong>The Cost of False Alarm (False Positive):</strong>
+                        <ul>
+                            <li>Additional diagnostic tests (biopsy, imaging)</li>
+                            <li>Patient anxiety and stress</li>
+                            <li>Healthcare costs</li>
+                            <li>Time and inconvenience</li>
+                        </ul>
+                        <p><em>While unpleasant, false positives are generally recoverable - missed cancers may not be.</em></p>
+                    </div>
+                    
+                    <h4>Clinical Implications of Each Error Type</h4>
+                    <table>
+                        <thead>
+                            <tr><th>Error Type</th><th>Medical Term</th><th>Clinical Impact</th><th>Acceptable Rate</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>False Negative</strong></td>
+                                <td>Missed Diagnosis</td>
+                                <td>Patient with cancer told they're healthy</td>
+                                <td>&lt; 5-10% (high recall needed)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>False Positive</strong></td>
+                                <td>False Alarm</td>
+                                <td>Healthy patient told they might have cancer</td>
+                                <td>10-20% often acceptable</td>
+                            </tr>
+                            <tr>
+                                <td><strong>True Positive</strong></td>
+                                <td>Correct Detection</td>
+                                <td>Cancer correctly identified for treatment</td>
+                                <td>Maximize (high sensitivity)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>True Negative</strong></td>
+                                <td>Correct Clearance</td>
+                                <td>Healthy patient correctly reassured</td>
+                                <td>Maximize (high specificity)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h4>Balancing Metrics for Different Clinical Scenarios</h4>
+                    <div class="card-grid">
+                        <div class="card" style="border-left: 4px solid #dc3545;">
+                            <h4>🔴 Screening (First-line)</h4>
+                            <p><strong>Priority:</strong> High Recall (&gt;95%)</p>
+                            <p><strong>Rationale:</strong> Cast a wide net, don't miss any potential cases</p>
+                            <p><strong>Accept:</strong> More false positives for follow-up testing</p>
+                        </div>
+                        <div class="card" style="border-left: 4px solid #ffc107;">
+                            <h4>🟡 Diagnosis (Confirmation)</h4>
+                            <p><strong>Priority:</strong> High Precision (&gt;90%)</p>
+                            <p><strong>Rationale:</strong> Confirm cases before invasive treatment</p>
+                            <p><strong>Accept:</strong> Some cases sent for additional testing</p>
+                        </div>
+                        <div class="card" style="border-left: 4px solid #28a745;">
+                            <h4>🟢 Treatment Selection</h4>
+                            <p><strong>Priority:</strong> Balanced F1-Score</p>
+                            <p><strong>Rationale:</strong> Both errors have significant consequences</p>
+                            <p><strong>Accept:</strong> Trade-offs based on treatment risks</p>
+                        </div>
+                    </div>
+                    
+                    <h4>Communicating Results to Stakeholders</h4>
+                    <pre><code># Generate clinical summary report
+def generate_clinical_summary(y_test, y_pred, y_proba):
+    """Generate a clinical summary of model performance."""
+    from sklearn.metrics import confusion_matrix, precision_score, recall_score
+    
+    cm = confusion_matrix(y_test, y_pred)
+    tn, fp, fn, tp = cm.ravel()
+    
+    sensitivity = tp / (tp + fn)  # Recall
+    specificity = tn / (tn + fp)
+    ppv = tp / (tp + fp)          # Precision (Positive Predictive Value)
+    npv = tn / (tn + fn)          # Negative Predictive Value
+    
+    print("=" * 60)
+    print("CLINICAL PERFORMANCE SUMMARY")
+    print("=" * 60)
+    print(f"\n📊 Key Clinical Metrics:")
+    print(f"  Sensitivity (Recall):     {sensitivity:.1%}")
+    print(f"    → {tp} of {tp+fn} cancer cases correctly identified")
+    print(f"  Specificity:              {specificity:.1%}")
+    print(f"    → {tn} of {tn+fp} healthy patients correctly cleared")
+    print(f"  Positive Predictive Value: {ppv:.1%}")
+    print(f"    → When model predicts cancer, it's correct {ppv:.1%} of the time")
+    print(f"  Negative Predictive Value: {npv:.1%}")
+    print(f"    → When model predicts healthy, it's correct {npv:.1%} of the time")
+    
+    print(f"\n⚠️ Clinical Concerns:")
+    print(f"  Missed cancers (False Negatives): {fn}")
+    print(f"  False alarms (False Positives):   {fp}")
+    
+    if sensitivity >= 0.95:
+        print(f"\n✅ Model meets screening threshold (Sensitivity ≥ 95%)")
+    else:
+        print(f"\n⚠️ Model below screening threshold (Sensitivity < 95%)")
+        print(f"   Consider lowering prediction threshold to improve recall")
+
+# Run clinical summary
+generate_clinical_summary(y_test, y_test_pred, y_test_proba)</code></pre>
+                </div>
+            </section>
+            
+            <!-- WEEK 3 SECTION -->
+            <section id="week3">
+                <h2>📅 Week 3: Feature Engineering & Data Partitioning</h2>
+                
+                <div class="info">
+                    <strong>⏰ Week 3 Timeline:</strong> Days 15-21 of the project<br>
+                    <strong>🎯 Focus:</strong> Prepare your cleaned data for machine learning by engineering features and splitting the dataset properly
+                </div>
+                
+                <h3>Complete Week 3 Python Code</h3>
+                
+                <div class="card">
+                    <h4>Full Script: Feature Engineering & Data Split</h4>
+                    <p>Copy this complete script and run it with your cleaned dataset from Sprint 1.</p>
+                    
+                    <pre><code>"""
+XPro AI - Cancer Prediction Feature Engineering
+Sprint 2, Week 3: Feature Engineering & Data Partitioning
+Team: [Your Team Name]
+Date: [Current Date]
+"""
+
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+import warnings
+warnings.filterwarnings('ignore')
+
+print("="*60)
+print("XPRO AI - SPRINT 2 WEEK 3")
+print("Feature Engineering & Data Partitioning")
+print("="*60)
+
+# ============================================
+# STEP 1: LOAD CLEANED DATA FROM SPRINT 1
+# ============================================
+
+print("\n" + "="*60)
+print("STEP 1: LOADING CLEANED DATASET")
+print("="*60)
+
+# Load the cleaned dataset from Sprint 1
+df = pd.read_excel('AI_<TeamName>_CleanedDataset.xlsx')
+
+print(f"\n✓ Dataset loaded successfully!")
+print(f"  Shape: {df.shape}")
+print(f"  Columns: {list(df.columns)}")
+
+print("\nFirst 5 rows:")
+print(df.head())
+
+print("\nDataset Info:")
+print(df.info())
+
+print("\nTarget Variable Distribution:")
+print(df['Cancer'].value_counts())
+print(f"Cancer prevalence: {df['Cancer'].mean()*100:.1f}%")
+
+# ============================================
+# STEP 2: ENCODE CATEGORICAL VARIABLES
+# ============================================
+
+print("\n" + "="*60)
+print("STEP 2: ENCODING CATEGORICAL VARIABLES")
+print("="*60)
+
+# Method: Label Encoding for binary categories
+# This converts text to numbers that ML models can understand
+
+# Gender: Male=1, Female=0
+df['Gender_Encoded'] = (df['Gender'] == 'Male').astype(int)
+print("\n✓ Gender encoded: Male=1, Female=0")
+
+# Smoking: Yes=1, No=0
+df['Smoking_Encoded'] = (df['Smoking'] == 'Yes').astype(int)
+print("✓ Smoking encoded: Yes=1, No=0")
+
+# Family_History: Yes=1, No=0
+df['Family_History_Encoded'] = (df['Family_History'] == 'Yes').astype(int)
+print("✓ Family History encoded: Yes=1, No=0")
+
+print("\nEncoded Features Sample:")
+print(df[['Gender', 'Gender_Encoded', 
+          'Smoking', 'Smoking_Encoded',
+          'Family_History', 'Family_History_Encoded']].head())
+
+# ============================================
+# STEP 3: FEATURE SCALING
+# ============================================
+
+print("\n" + "="*60)
+print("STEP 3: FEATURE SCALING")
+print("="*60)
+
+# Select numerical features to scale
+numerical_features = ['Age', 'Blood_Pressure', 'Cholesterol', 'BMI']
+
+print("\nOriginal ranges before scaling:")
+for feature in numerical_features:
+    print(f"  {feature:20s}: {df[feature].min():7.2f} to {df[feature].max():7.2f}")
+
+# Create a copy for scaling
+df_scaled = df.copy()
+
+# Create StandardScaler (mean=0, std=1)
+scaler = StandardScaler()
+
+# Fit and transform numerical features
+df_scaled[numerical_features] = scaler.fit_transform(df[numerical_features])
+
+print("\nAfter scaling (mean≈0, std≈1):")
+for feature in numerical_features:
+    print(f"  {feature:20s}: mean={df_scaled[feature].mean():7.2f}, std={df_scaled[feature].std():7.2f}")
+
+print("\nScaled values (first 5 rows):")
+print(df_scaled[numerical_features].head())
+
+# ============================================
+# STEP 4: CREATE NEW FEATURES
+# ============================================
+
+print("\n" + "="*60)
+print("STEP 4: FEATURE ENGINEERING - CREATING NEW FEATURES")
+print("="*60)
+
+# Feature 1: Age Groups
+def categorize_age(age):
+    """Categorize age into groups"""
+    if age < 30:
+        return 0  # Young
+    elif age < 50:
+        return 1  # Middle-aged
+    elif age < 65:
+        return 2  # Senior
+    else:
+        return 3  # Elderly
+
+df_scaled['Age_Group'] = df['Age'].apply(categorize_age)
+print("\n✓ Age_Group created (0=Young, 1=Middle, 2=Senior, 3=Elderly)")
+print(f"  Distribution: {df_scaled['Age_Group'].value_counts().to_dict()}")
+
+# Feature 2: BMI Category
+def categorize_bmi(bmi):
+    """Categorize BMI into standard health categories"""
+    if bmi < 18.5:
+        return 0  # Underweight
+    elif bmi < 25:
+        return 1  # Normal
+    elif bmi < 30:
+        return 2  # Overweight
+    else:
+        return 3  # Obese
+
+df_scaled['BMI_Category'] = df['BMI'].apply(categorize_bmi)
+print("\n✓ BMI_Category created (0=Under, 1=Normal, 2=Over, 3=Obese)")
+print(f"  Distribution: {df_scaled['BMI_Category'].value_counts().to_dict()}")
+
+# Feature 3: Risk Score (composite feature)
+df_scaled['Risk_Score'] = (
+    df_scaled['Smoking_Encoded'] * 1.0 +      # Smoking adds to risk
+    df_scaled['Family_History_Encoded'] * 1.0 + # Family history adds to risk
+    (df_scaled['Age_Group'] / 3) +             # Normalized age contribution
+    (df_scaled['BMI_Category'] / 3)            # Normalized BMI contribution
+)
+print("\n✓ Risk_Score created (combination of risk factors)")
+print(f"  Range: {df_scaled['Risk_Score'].min():.2f} to {df_scaled['Risk_Score'].max():.2f}")
+print(f"  Mean: {df_scaled['Risk_Score'].mean():.2f}")
+
+# Feature 4: Hypertension Flag
+df_scaled['Has_Hypertension'] = (df['Blood_Pressure'] > 140).astype(int)
+print("\n✓ Has_Hypertension created (BP > 140 = 1)")
+print(f"  {df_scaled['Has_Hypertension'].sum()} patients ({df_scaled['Has_Hypertension'].mean()*100:.1f}%) have hypertension")
+
+# Feature 5: High Cholesterol Flag
+df_scaled['Has_High_Cholesterol'] = (df['Cholesterol'] > 240).astype(int)
+print("\n✓ Has_High_Cholesterol created (Cholesterol > 240 = 1)")
+print(f"  {df_scaled['Has_High_Cholesterol'].sum()} patients ({df_scaled['Has_High_Cholesterol'].mean()*100:.1f}%) have high cholesterol")
+
+# Feature 6: Multiple Risk Factors
+df_scaled['Multiple_Risks'] = (
+    (df_scaled['Smoking_Encoded'] == 1) & 
+    (df_scaled['Family_History_Encoded'] == 1)
+).astype(int)
+print("\n✓ Multiple_Risks created (Smoking AND Family History)")
+print(f"  {df_scaled['Multiple_Risks'].sum()} patients have both risk factors")
+
+print("\nNew Features Summary:")
+print(df_scaled[['Age_Group', 'BMI_Category', 'Risk_Score', 
+                 'Has_Hypertension', 'Has_High_Cholesterol', 
+                 'Multiple_Risks']].describe())
+
+# ============================================
+# STEP 5: PREPARE FEATURE SET
+# ============================================
+
+print("\n" + "="*60)
+print("STEP 5: PREPARING FINAL FEATURE SET")
+print("="*60)
+
+# Define all features to use for modeling
+feature_columns = [
+    # Scaled numerical features
+    'Age', 'Blood_Pressure', 'Cholesterol', 'BMI',
+    # Encoded categorical features
+    'Gender_Encoded', 'Smoking_Encoded', 'Family_History_Encoded',
+    # Engineered features
+    'Age_Group', 'BMI_Category', 'Risk_Score',
+    'Has_Hypertension', 'Has_High_Cholesterol', 'Multiple_Risks'
+]
+
+# Prepare X (features) and y (target)
+X = df_scaled[feature_columns]
+y = df_scaled['Cancer']
+
+print(f"\nFeatures (X):")
+print(f"  Shape: {X.shape}")
+print(f"  Total features: {len(feature_columns)}")
+print(f"  Features: {feature_columns}")
+
+print(f"\nTarget (y):")
+print(f"  Shape: {y.shape}")
+print(f"  Distribution: {y.value_counts().to_dict()}")
+print(f"  Cancer rate: {y.mean()*100:.1f}%")
+
+# ============================================
+# STEP 6: TRAIN-TEST SPLIT (80/20)
+# ============================================
+
+print("\n" + "="*60)
+print("STEP 6: TRAIN-TEST SPLIT")
+print("="*60)
+
+# Split data: 80% training, 20% testing
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y,
+    test_size=0.2,        # 20% for testing
+    random_state=42,      # For reproducibility
+    stratify=y            # Maintain class distribution
+)
+
+print("\n✓ Data split successfully!")
+
+print("\n📊 TRAINING SET:")
+print(f"  Features: {X_train.shape}")
+print(f"  Target: {y_train.shape}")
+print(f"  Total samples: {len(y_train)}")
+print(f"  Cancer cases: {y_train.sum()} ({y_train.mean()*100:.1f}%)")
+print(f"  No cancer cases: {(y_train==0).sum()} ({(y_train==0).mean()*100:.1f}%)")
+
+print("\n📊 TESTING SET:")
+print(f"  Features: {X_test.shape}")
+print(f"  Target: {y_test.shape}")
+print(f"  Total samples: {len(y_test)}")
+print(f"  Cancer cases: {y_test.sum()} ({y_test.mean()*100:.1f}%)")
+print(f"  No cancer cases: {(y_test==0).sum()} ({(y_test==0).mean()*100:.1f}%)")
+
+# Verify stratification
+print("\n✓ Stratification Check:")
+print(f"  Original cancer rate: {y.mean()*100:.1f}%")
+print(f"  Training cancer rate: {y_train.mean()*100:.1f}%")
+print(f"  Testing cancer rate: {y_test.mean()*100:.1f}%")
+print("  → Rates are similar - stratification successful!")
+
+# ============================================
+# STEP 7: SAVE PROCESSED DATA
+# ============================================
+
+print("\n" + "="*60)
+print("STEP 7: SAVING PROCESSED DATASETS")
+print("="*60)
+
+# Save complete processed dataset
+processed_df = df_scaled[feature_columns + ['Cancer']].copy()
+processed_df.to_excel('AI_<TeamName>_ProcessedDataset.xlsx', index=False)
+print("\n✓ Processed dataset saved: AI_<TeamName>_ProcessedDataset.xlsx")
+
+# Save training set
+train_df = pd.concat([X_train, y_train], axis=1)
+train_df.to_excel('AI_<TeamName>_TrainSet.xlsx', index=False)
+print("✓ Training set saved: AI_<TeamName>_TrainSet.xlsx")
+
+# Save testing set
+test_df = pd.concat([X_test, y_test], axis=1)
+test_df.to_excel('AI_<TeamName>_TestSet.xlsx', index=False)
+print("✓ Testing set saved: AI_<TeamName>_TestSet.xlsx")
+
+# Save feature list for reference
+feature_info = pd.DataFrame({
+    'Feature': feature_columns,
+    'Description': [
+        'Patient age (scaled)',
+        'Systolic blood pressure (scaled)',
+        'Total cholesterol (scaled)',
+        'Body Mass Index (scaled)',
+        'Gender (1=Male, 0=Female)',
+        'Smoking status (1=Yes, 0=No)',
+        'Family history of cancer (1=Yes, 0=No)',
+        'Age group (0=Young, 1=Middle, 2=Senior, 3=Elderly)',
+        'BMI category (0=Under, 1=Normal, 2=Over, 3=Obese)',
+        'Composite risk score',
+        'Hypertension flag (BP>140)',
+        'High cholesterol flag (>240)',
+        'Multiple risk factors flag'
+    ]
+})
+feature_info.to_excel('AI_<TeamName>_FeatureList.xlsx', index=False)
+print("✓ Feature list saved: AI_<TeamName>_FeatureList.xlsx")
+
+# ============================================
+# FINAL SUMMARY
+# ============================================
+
+print("\n" + "="*60)
+print("✅ WEEK 3 COMPLETE!")
+print("="*60)
+
+print("\n📦 DELIVERABLES CREATED:")
+print("  1. AI_<TeamName>_ProcessedDataset.xlsx")
+print("  2. AI_<TeamName>_TrainSet.xlsx")
+print("  3. AI_<TeamName>_TestSet.xlsx")
+print("  4. AI_<TeamName>_FeatureList.xlsx")
+
+print("\n🎯 WHAT WE ACCOMPLISHED:")
+print("  ✓ Encoded 3 categorical variables")
+print("  ✓ Scaled 4 numerical features")
+print("  ✓ Created 6 new engineered features")
+print(f"  ✓ Total features: {len(feature_columns)}")
+print(f"  ✓ Training samples: {len(y_train)}")
+print(f"  ✓ Testing samples: {len(y_test)}")
+
+print("\n🚀 READY FOR WEEK 4: MODEL TRAINING!")
+print("="*60)
+</code></pre>
+                </div>
+                
+                <h3>Week 3 Key Concepts Explained</h3>
+                
+                <div class="card">
+                    <h4>Why StandardScaler?</h4>
+                    <p><strong>Problem:</strong> Different features have different scales:</p>
+                    <ul>
+                        <li>Age: 18-90 (range of 72)</li>
+                        <li>Blood Pressure: 90-200 (range of 110)</li>
+                        <li>Cholesterol: 150-300 (range of 150)</li>
+                    </ul>
+                    <p><strong>Solution:</strong> StandardScaler transforms all features to have mean=0 and std=1, so no feature dominates due to its scale.</p>
+                    <p><strong>Formula:</strong> scaled_value = (value - mean) / standard_deviation</p>
+                </div>
+                
+                <div class="card">
+                    <h4>Why Create New Features?</h4>
+                    <p>Sometimes combinations of features reveal patterns that individual features miss:</p>
+                    <ul>
+                        <li><strong>Risk_Score:</strong> A person who smokes AND has family history is at higher risk than either alone</li>
+                        <li><strong>Age_Group:</strong> Cancer risk often increases in age brackets rather than linearly</li>
+                        <li><strong>Has_Hypertension:</strong> Binary flags can be more informative than continuous values for some patterns</li>
+                    </ul>
+                </div>
+                
+                <h3>Week 3 Deliverables</h3>
+                <div class="success">
+                    <strong>✅ Week 3 Outputs:</strong>
+                    <ul>
+                        <li><code>AI_&lt;TeamName&gt;_ProcessedDataset.xlsx</code> - Complete dataset with all engineered features</li>
+                        <li><code>AI_&lt;TeamName&gt;_TrainSet.xlsx</code> - Training data (80% of records)</li>
+                        <li><code>AI_&lt;TeamName&gt;_TestSet.xlsx</code> - Testing data (20% of records)</li>
+                        <li><code>AI_&lt;TeamName&gt;_FeatureList.xlsx</code> - Documentation of all features</li>
+                        <li>Python code saved in your script</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <!-- WEEK 4 SECTION -->
+            <section id="week4">
+                <h2>📅 Week 4: Model Training, Evaluation & Interpretation</h2>
+                
+                <div class="info">
+                    <strong>⏰ Week 4 Timeline:</strong> Days 22-28 of the project<br>
+                    <strong>🎯 Focus:</strong> Train Random Forest model, evaluate performance, create visualizations and reports
+                </div>
+                
+                <h3>Complete Week 4 Python Code</h3>
+                
+                <div class="card">
+                    <h4>Full Script: Model Training & Evaluation</h4>
+                    <p>This script continues from Week 3. Make sure you have the train/test sets ready!</p>
+                    
+                    <pre><code>"""
+XPro AI - Cancer Prediction Model Training
+Sprint 2, Week 4: Model Training, Evaluation & Interpretation
+Team: [Your Team Name]
+Date: [Current Date]
+"""
+
+import pandas as pd
+import numpy as np
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import (accuracy_score, precision_score, recall_score,
+                            f1_score, confusion_matrix, classification_report,
+                            roc_curve, roc_auc_score)
+import matplotlib.pyplot as plt
+import seaborn as sns
+import joblib
+import warnings
+warnings.filterwarnings('ignore')
+
+# Set style for plots
+plt.style.use('seaborn-v0_8-darkgrid')
+sns.set_palette("husl")
+
+print("="*60)
+print("XPRO AI - SPRINT 2 WEEK 4")
+print("Model Training, Evaluation & Interpretation")
+print("="*60)
+
+# ============================================
+# STEP 1: LOAD TRAIN/TEST SETS FROM WEEK 3
+# ============================================
+
+print("\n" + "="*60)
+print("STEP 1: LOADING TRAINING AND TESTING DATASETS")
+print("="*60)
+
+# Load the datasets created in Week 3
+train_df = pd.read_excel('AI_<TeamName>_TrainSet.xlsx')
+test_df = pd.read_excel('AI_<TeamName>_TestSet.xlsx')
+
+# Separate features and target
+X_train = train_df.drop('Cancer', axis=1)
+y_train = train_df['Cancer']
+X_test = test_df.drop('Cancer', axis=1)
+y_test = test_df['Cancer']
+
+print("\n✓ Data loaded successfully!")
+print(f"\nTraining set:")
+print(f"  X_train: {X_train.shape}")
+print(f"  y_train: {y_train.shape}")
+print(f"  Cancer cases: {y_train.sum()}")
+
+print(f"\nTesting set:")
+print(f"  X_test: {X_test.shape}")
+print(f"  y_test: {y_test.shape}")
+print(f"  Cancer cases: {y_test.sum()}")
+
+# ============================================
+# STEP 2: INITIALIZE RANDOM FOREST MODEL
+# ============================================
+
+print("\n" + "="*60)
+print("STEP 2: INITIALIZING RANDOM FOREST MODEL")
+print("="*60)
+
+# Create Random Forest Classifier with optimal parameters
+rf_model = RandomForestClassifier(
+    n_estimators=100,         # Number of trees
+    max_depth=10,             # Maximum depth of trees
+    min_samples_split=5,      # Min samples to split node
+    min_samples_leaf=2,       # Min samples at leaf
+    random_state=42,          # For reproducibility
+    n_jobs=-1,                # Use all CPU cores
+    class_weight='balanced'   # Handle class imbalance
+)
+
+print("\n✓ Model initialized with parameters:")
+print(f"  - Number of trees: 100")
+print(f"  - Maximum depth: 10")
+print(f"  - Min samples split: 5")
+print(f"  - Min samples leaf: 2")
+print(f"  - Random state: 42")
+print(f"  - Class weight: balanced")
+
+# ============================================
+# STEP 3: TRAIN THE MODEL
+# ============================================
+
+print("\n" + "="*60)
+print("STEP 3: TRAINING THE MODEL")
+print("="*60)
+
+print("\n🎓 Training Random Forest on training data...")
+print("   This may take a moment...")
+
+# Train the model
+rf_model.fit(X_train, y_train)
+
+print("\n✓ Model training complete!")
+print(f"   Total trees trained: {rf_model.n_estimators}")
+print(f"   Features used: {len(X_train.columns)}")
+
+# ============================================
+# STEP 4: MAKE PREDICTIONS
+# ============================================
+
+print("\n" + "="*60)
+print("STEP 4: MAKING PREDICTIONS")
+print("="*60)
+
+# Predictions on training set
+y_train_pred = rf_model.predict(X_train)
+y_train_proba = rf_model.predict_proba(X_train)[:, 1]
+
+# Predictions on test set
+y_test_pred = rf_model.predict(X_test)
+y_test_proba = rf_model.predict_proba(X_test)[:, 1]
+
+print(f"\n✓ Predictions made!")
+print(f"   Training samples: {len(y_train_pred)}")
+print(f"   Testing samples: {len(y_test_pred)}")
+
+print(f"\nFirst 10 test predictions vs actual:")
+comparison_df = pd.DataFrame({
+    'Actual': y_test.values[:10],
+    'Predicted': y_test_pred[:10],
+    'Probability': y_test_proba[:10].round(3)
+})
+print(comparison_df.to_string(index=False))
+
+# ============================================
+# STEP 5: CALCULATE PERFORMANCE METRICS
+# ============================================
+
+print("\n" + "="*60)
+print("STEP 5: CALCULATING PERFORMANCE METRICS")
+print("="*60)
+
+# Training set metrics
+train_accuracy = accuracy_score(y_train, y_train_pred)
+train_precision = precision_score(y_train, y_train_pred, zero_division=0)
+train_recall = recall_score(y_train, y_train_pred, zero_division=0)
+train_f1 = f1_score(y_train, y_train_pred, zero_division=0)
+
+# Test set metrics
+test_accuracy = accuracy_score(y_test, y_test_pred)
+test_precision = precision_score(y_test, y_test_pred, zero_division=0)
+test_recall = recall_score(y_test, y_test_pred, zero_division=0)
+test_f1 = f1_score(y_test, y_test_pred, zero_division=0)
+
+print("\n" + "="*60)
+print("📊 TRAINING SET PERFORMANCE")
+print("="*60)
+print(f"  Accuracy:  {train_accuracy:.4f} ({train_accuracy*100:.2f}%)")
+print(f"  Precision: {train_precision:.4f} ({train_precision*100:.2f}%)")
+print(f"  Recall:    {train_recall:.4f} ({train_recall*100:.2f}%)")
+print(f"  F1-Score:  {train_f1:.4f} ({train_f1*100:.2f}%)")
+
+print("\n" + "="*60)
+print("📊 TEST SET PERFORMANCE (MOST IMPORTANT)")
+print("="*60)
+print(f"  Accuracy:  {test_accuracy:.4f} ({test_accuracy*100:.2f}%)")
+print(f"  Precision: {test_precision:.4f} ({test_precision*100:.2f}%)")
+print(f"  Recall:    {test_recall:.4f} ({test_recall*100:.2f}%)")
+print(f"  F1-Score:  {test_f1:.4f} ({test_f1*100:.2f}%)")
+
+# Overfitting check
+accuracy_diff = train_accuracy - test_accuracy
+print("\n" + "="*60)
+print("🔍 OVERFITTING CHECK")
+print("="*60)
+print(f"  Training Accuracy:  {train_accuracy:.4f}")
+print(f"  Testing Accuracy:   {test_accuracy:.4f}")
+print(f"  Difference:         {accuracy_diff:.4f} ({accuracy_diff*100:.2f}%)")
+
+if accuracy_diff < 0.05:
+    print("  ✓ Excellent! Model generalizes very well (difference < 5%)")
+elif accuracy_diff < 0.10:
+    print("  ✓ Good! Acceptable generalization (difference 5-10%)")
+elif accuracy_diff < 0.15:
+    print("  ⚠ Warning: Some overfitting detected (difference 10-15%)")
+else:
+    print("  ⚠ Alert: Significant overfitting (difference > 15%)")
+    print("  → Consider reducing max_depth or adding more training data")
+
+# Detailed classification report
+print("\n" + "="*60)
+print("DETAILED CLASSIFICATION REPORT (Test Set)")
+print("="*60)
+print(classification_report(y_test, y_test_pred,
+                          target_names=['No Cancer (0)', 'Cancer (1)'],
+                          digits=4))
+
+# ============================================
+# STEP 6: CONFUSION MATRIX
+# ============================================
+
+print("\n" + "="*60)
+print("STEP 6: CONFUSION MATRIX ANALYSIS")
+print("="*60)
+
+# Calculate confusion matrix
+cm = confusion_matrix(y_test, y_test_pred)
+tn, fp, fn, tp = cm.ravel()
+
+print("\nConfusion Matrix:")
+print(f"                  Predicted")
+print(f"                No Cancer  |  Cancer")
+print(f"Actual No Cancer    {tn:3d}    |   {fp:3d}")
+print(f"Actual Cancer       {fn:3d}    |   {tp:3d}")
+
+print(f"\n📊 Breakdown:")
+print(f"  True Negatives (TN):  {tn:3d} - Correctly predicted NO cancer ✓")
+print(f"  True Positives (TP):  {tp:3d} - Correctly predicted cancer ✓")
+print(f"  False Positives (FP): {fp:3d} - False alarms ✗")
+print(f"  False Negatives (FN): {fn:3d} - Missed cancer cases ✗ DANGEROUS!")
+
+print(f"\n📈 Summary:")
+total = tn + fp + fn + tp
+print(f"  Total Predictions: {total}")
+print(f"  Correct: {tn + tp} ({(tn+tp)/total*100:.1f}%)")
+print(f"  Incorrect: {fp + fn} ({(fp+fn)/total*100:.1f}%)")
+
+# Visualize confusion matrix
+plt.figure(figsize=(8, 6))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
+            xticklabels=['No Cancer', 'Cancer'],
+            yticklabels=['No Cancer', 'Cancer'],
+            cbar_kws={'label': 'Count'})
+plt.title('Confusion Matrix - Cancer Prediction Model\n',
+          fontsize=14, fontweight='bold')
+plt.ylabel('Actual', fontsize=12)
+plt.xlabel('Predicted', fontsize=12)
+plt.tight_layout()
+plt.savefig('AI_<TeamName>_ConfusionMatrix.png', dpi=300, bbox_inches='tight')
+print("\n✓ Confusion matrix saved: AI_<TeamName>_ConfusionMatrix.png")
+plt.close()
+
+# ============================================
+# STEP 7: FEATURE IMPORTANCE
+# ============================================
+
+print("\n" + "="*60)
+print("STEP 7: FEATURE IMPORTANCE ANALYSIS")
+print("="*60)
+
+# Get feature importances
+feature_importance = pd.DataFrame({
+    'Feature': X_train.columns,
+    'Importance': rf_model.feature_importances_
+}).sort_values('Importance', ascending=False)
+
+print("\n📊 Feature Importance Rankings:")
+print(feature_importance.to_string(index=False))
+
+print(f"\n🔍 Key Insights:")
+print(f"  Most important: {feature_importance.iloc[0]['Feature']} "
+      f"({feature_importance.iloc[0]['Importance']:.4f})")
+print(f"  Least important: {feature_importance.iloc[-1]['Feature']} "
+      f"({feature_importance.iloc[-1]['Feature']:.4f})")
+
+# Visualize feature importance
+plt.figure(figsize=(10, 6))
+colors = plt.cm.viridis(np.linspace(0.3, 0.9, len(feature_importance)))
+plt.barh(feature_importance['Feature'], feature_importance['Importance'], color=colors)
+plt.xlabel('Importance Score', fontsize=12, fontweight='bold')
+plt.ylabel('Feature', fontsize=12, fontweight='bold')
+plt.title('Feature Importance - Random Forest Model\n', fontsize=14, fontweight='bold')
+plt.gca().invert_yaxis()
+plt.tight_layout()
+plt.savefig('AI_<TeamName>_FeatureImportance.png', dpi=300, bbox_inches='tight')
+print("\n✓ Feature importance chart saved: AI_<TeamName>_FeatureImportance.png")
+plt.close()
+
+# ============================================
+# STEP 8: ROC CURVE AND AUC
+# ============================================
+
+print("\n" + "="*60)
+print("STEP 8: ROC CURVE AND AUC SCORE")
+print("="*60)
+
+# Calculate ROC curve
+fpr, tpr, thresholds = roc_curve(y_test, y_test_proba)
+auc_score = roc_auc_score(y_test, y_test_proba)
+
+print(f"\n📈 AUC Score: {auc_score:.4f}")
+
+if auc_score > 0.90:
+    print("  ✓ Excellent performance! (AUC > 0.90)")
+elif auc_score > 0.80:
+    print("  ✓ Good performance (AUC 0.80-0.90)")
+elif auc_score > 0.70:
+    print("  ✓ Acceptable performance (AUC 0.70-0.80)")
+else:
+    print("  ⚠ Needs improvement (AUC < 0.70)")
+
+# Plot ROC curve
+plt.figure(figsize=(8, 6))
+plt.plot(fpr, tpr, linewidth=2, label=f'ROC Curve (AUC = {auc_score:.3f})', color='#667eea')
+plt.plot([0, 1], [0, 1], 'k--', linewidth=1, label='Random Classifier (AUC = 0.50)')
+plt.xlabel('False Positive Rate', fontsize=12, fontweight='bold')
+plt.ylabel('True Positive Rate', fontsize=12, fontweight='bold')
+plt.title('ROC Curve - Model Performance\n', fontsize=14, fontweight='bold')
+plt.legend(loc='lower right', fontsize=10)
+plt.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.savefig('AI_<TeamName>_ROC_Curve.png', dpi=300, bbox_inches='tight')
+print("✓ ROC curve saved: AI_<TeamName>_ROC_Curve.png")
+plt.close()
+
+# ============================================
+# STEP 9: PREDICTION VISUALIZATIONS
+# ============================================
+
+print("\n" + "="*60)
+print("STEP 9: CREATING PREDICTION VISUALIZATIONS")
+print("="*60)
+
+# Create multi-panel visualization
+fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+
+# Plot 1: Actual vs Predicted Distribution
+axes[0, 0].hist([y_test, y_test_pred], bins=2, alpha=0.7,
+               label=['Actual', 'Predicted'], color=['#667eea', '#ffc107'])
+axes[0, 0].set_xlabel('Cancer Status (0=No, 1=Yes)', fontweight='bold')
+axes[0, 0].set_ylabel('Frequency', fontweight='bold')
+axes[0, 0].set_title('Actual vs Predicted Distribution', fontweight='bold')
+axes[0, 0].legend()
+axes[0, 0].grid(True, alpha=0.3)
+
+# Plot 2: Prediction Probabilities
+axes[0, 1].hist(y_test_proba, bins=20, edgecolor='black', alpha=0.7, color='#667eea')
+axes[0, 1].axvline(x=0.5, color='red', linestyle='--', linewidth=2,
+                   label='Decision Threshold (0.5)')
+axes[0, 1].set_xlabel('Predicted Probability of Cancer', fontweight='bold')
+axes[0, 1].set_ylabel('Frequency', fontweight='bold')
+axes[0, 1].set_title('Distribution of Prediction Probabilities', fontweight='bold')
+axes[0, 1].legend()
+axes[0, 1].grid(True, alpha=0.3)
+
+# Plot 3: Model Performance Metrics
+metrics_names = ['Accuracy', 'Precision', 'Recall', 'F1-Score']
+train_metrics = [train_accuracy, train_precision, train_recall, train_f1]
+test_metrics = [test_accuracy, test_precision, test_recall, test_f1]
+
+x = np.arange(len(metrics_names))
+width = 0.35
+
+axes[1, 0].bar(x - width/2, train_metrics, width, label='Training', color='#667eea', alpha=0.8)
+axes[1, 0].bar(x + width/2, test_metrics, width, label='Testing', color='#ffc107', alpha=0.8)
+axes[1, 0].set_ylabel('Score', fontweight='bold')
+axes[1, 0].set_title('Model Performance Comparison', fontweight='bold')
+axes[1, 0].set_xticks(x)
+axes[1, 0].set_xticklabels(metrics_names, rotation=45, ha='right')
+axes[1, 0].legend()
+axes[1, 0].grid(True, alpha=0.3, axis='y')
+axes[1, 0].set_ylim([0, 1.1])
+
+# Plot 4: Confusion Matrix (visual)
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', ax=axes[1, 1],
+            xticklabels=['No Cancer', 'Cancer'],
+            yticklabels=['No Cancer', 'Cancer'])
+axes[1, 1].set_title('Confusion Matrix', fontweight='bold')
+axes[1, 1].set_ylabel('Actual', fontweight='bold')
+axes[1, 1].set_xlabel('Predicted', fontweight='bold')
+
+plt.suptitle('Cancer Prediction Model - Complete Analysis', 
+             fontsize=16, fontweight='bold', y=1.00)
+plt.tight_layout()
+plt.savefig('AI_<TeamName>_CompleteAnalysis.png', dpi=300, bbox_inches='tight')
+print("\n✓ Complete analysis saved: AI_<TeamName>_CompleteAnalysis.png")
+plt.close()
+
+# ============================================
+# STEP 10: SAVE METRICS TO EXCEL
+# ============================================
+
+print("\n" + "="*60)
+print("STEP 10: SAVING MODEL METRICS")
+print("="*60)
+
+# Create comprehensive metrics dataframe
+metrics_df = pd.DataFrame({
+    'Metric': ['Accuracy', 'Precision', 'Recall', 'F1-Score', 'AUC Score',
+               'True Negatives', 'True Positives', 
+               'False Positives', 'False Negatives'],
+    'Training Set': [f"{train_accuracy:.4f}", f"{train_precision:.4f}", 
+                     f"{train_recall:.4f}", f"{train_f1:.4f}", '-',
+                     '-', '-', '-', '-'],
+    'Test Set': [f"{test_accuracy:.4f}", f"{test_precision:.4f}", 
+                 f"{test_recall:.4f}", f"{test_f1:.4f}", f"{auc_score:.4f}",
+                 str(tn), str(tp), str(fp), str(fn)]
+})
+
+metrics_df.to_excel('AI_<TeamName>_ModelMetrics.xlsx', index=False)
+print("\n✓ Model metrics saved: AI_<TeamName>_ModelMetrics.xlsx")
+
+# Save feature importance
+feature_importance.to_excel('AI_<TeamName>_FeatureImportance.xlsx', index=False)
+print("✓ Feature importance saved: AI_<TeamName>_FeatureImportance.xlsx")
+
+# Save predictions
+predictions_df = pd.DataFrame({
+    'Actual': y_test.values,
+    'Predicted': y_test_pred,
+    'Probability_Cancer': y_test_proba,
+    'Probability_No_Cancer': 1 - y_test_proba,
+    'Correct': (y_test.values == y_test_pred)
+})
+predictions_df.to_excel('AI_<TeamName>_Predictions.xlsx', index=False)
+print("✓ Predictions saved: AI_<TeamName>_Predictions.xlsx")
+
+# ============================================
+# STEP 11: SAVE TRAINED MODEL
+# ============================================
+
+print("\n" + "="*60)
+print("STEP 11: SAVING TRAINED MODEL")
+print("="*60)
+
+# Save the trained model for future use
+joblib.dump(rf_model, 'AI_<TeamName>_TrainedModel.pkl')
+print("\n✓ Trained model saved: AI_<TeamName>_TrainedModel.pkl")
+print("  (Can be loaded later with: joblib.load('AI_<TeamName>_TrainedModel.pkl'))")
+
+# ============================================
+# STEP 12: CREATE PREDICTION REPORT ZIP
+# ============================================
+
+print("\n" + "="*60)
+print("STEP 12: PACKAGING PREDICTION REPORT")
+print("="*60)
+
+import zipfile
+import os
+
+zip_filename = 'AI_<TeamName>_PredictionReport.zip'
+files_to_zip = [
+    'AI_<TeamName>_ConfusionMatrix.png',
+    'AI_<TeamName>_FeatureImportance.png',
+    'AI_<TeamName>_ROC_Curve.png',
+    'AI_<TeamName>_CompleteAnalysis.png',
+    'AI_<TeamName>_Predictions.xlsx',
+    'AI_<TeamName>_ModelMetrics.xlsx'
+]
+
+with zipfile.ZipFile(zip_filename, 'w') as zipf:
+    for file in files_to_zip:
+        if os.path.exists(file):
+            zipf.write(file)
+            print(f"  ✓ Added: {file}")
+
+print(f"\n✓ Prediction report packaged: {zip_filename}")
+
+# ============================================
+# FINAL SUMMARY AND RECOMMENDATIONS
+# ============================================
+
+print("\n" + "="*60)
+print("🎉 SPRINT 2 WEEK 4 COMPLETE!")
+print("="*60)
+
+print("\n📦 ALL DELIVERABLES CREATED:")
+print("  1. ✓ AI_<TeamName>_ModelMetrics.xlsx")
+print("  2. ✓ AI_<TeamName>_FeatureImportance.xlsx")
+print("  3. ✓ AI_<TeamName>_Predictions.xlsx")
+print("  4. ✓ AI_<TeamName>_ConfusionMatrix.png")
+print("  5. ✓ AI_<TeamName>_FeatureImportance.png")
+print("  6. ✓ AI_<TeamName>_ROC_Curve.png")
+print("  7. ✓ AI_<TeamName>_CompleteAnalysis.png")
+print("  8. ✓ AI_<TeamName>_TrainedModel.pkl")
+print("  9. ✓ AI_<TeamName>_PredictionReport.zip")
+
+print("\n" + "="*60)
+print("📊 MODEL PERFORMANCE SUMMARY")
+print("="*60)
+print(f"  Test Accuracy:  {test_accuracy*100:.2f}%")
+print(f"  Test Precision: {test_precision*100:.2f}%")
+print(f"  Test Recall:    {test_recall*100:.2f}%")
+print(f"  Test F1-Score:  {test_f1*100:.2f}%")
+print(f"  AUC Score:      {auc_score:.4f}")
+
+print("\n🔍 MODEL ASSESSMENT:")
+if test_accuracy > 0.85:
+    print("  ✓ Excellent performance!")
+elif test_accuracy > 0.75:
+    print("  ✓ Good performance")
+elif test_accuracy > 0.70:
+    print("  ✓ Acceptable performance")
+else:
+    print("  ⚠ Performance needs improvement")
+
+print("\n💡 NEXT STEPS:")
+print("  1. Write prediction analysis report (Word document)")
+print("  2. Update Sprint 2 documentation")
+print("  3. Prepare for Sprint 3: Optimization & Deployment")
+
+print("\n" + "="*60)
+print("🚀 READY FOR SPRINT 3!")
+print("="*60)
+</code></pre>
+                </div>
+                
+                <h3>Understanding the Results</h3>
+                
+                <div class="card">
+                    <h4>What Do the Metrics Mean for Our Cancer Model?</h4>
+                    
+                    <p><strong>Example Results Interpretation:</strong></p>
+                    <ul>
+                        <li><strong>Accuracy = 85%:</strong> Model correctly predicts 85 out of 100 cases overall</li>
+                        <li><strong>Precision = 80%:</strong> When model predicts cancer, it's correct 80% of the time (20% false alarms)</li>
+                        <li><strong>Recall = 92%:</strong> Model catches 92% of actual cancer cases (only misses 8%)</li>
+                        <li><strong>F1-Score = 86%:</strong> Balanced measure showing good overall performance</li>
+                        <li><strong>AUC = 0.89:</strong> Model distinguishes cancer from non-cancer very well</li>
+                    </ul>
+                    
+                    <div class="highlight">
+                        <strong>Clinical Interpretation:</strong>
+                        <p>High recall (92%) is excellent for cancer screening - we're catching most cases. The 20% false positive rate means some healthy patients will need follow-up tests, but this is acceptable to avoid missing actual cancer cases.</p>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h4>Creating Your Word Report</h4>
+                    <p><strong>File: AI_&lt;TeamName&gt;_PredictionReport.docx</strong></p>
+                    
+                    <h4>Report Structure (15-20 pages):</h4>
+                    
+                    <ol>
+                        <li>
+                            <strong>Executive Summary (1 page)</strong>
+                            <ul>
+                                <li>Project objective recap</li>
+                                <li>Key findings (2-3 bullets)</li>
+                                <li>Model performance summary</li>
+                                <li>Main recommendation</li>
+                            </ul>
+                        </li>
+                        
+                        <li>
+                            <strong>Introduction (1-2 pages)</strong>
+                            <ul>
+                                <li>Problem statement</li>
+                                <li>Importance of cancer prediction</li>
+                                <li>Project scope and objectives</li>
+                                <li>Report organization</li>
+                            </ul>
+                        </li>
+                        
+                        <li>
+                            <strong>Data & Methodology (3-4 pages)</strong>
+                            <ul>
+                                <li>Dataset description (from Sprint 1)</li>
+                                <li>Feature engineering techniques applied</li>
+                                <li>Train-test split approach (80/20)</li>
+                                <li>Why Random Forest was chosen</li>
+                                <li>Model parameters and rationale</li>
+                            </ul>
+                        </li>
+                        
+                        <li>
+                            <strong>Model Performance (4-5 pages)</strong>
+                            <ul>
+                                <li>All metrics with explanations</li>
+                                <li>Confusion matrix analysis (include image)</li>
+                                <li>ROC curve interpretation (include image)</li>
+                                <li>Overfitting assessment</li>
+                                <li>Comparison: train vs test performance</li>
+                            </ul>
+                        </li>
+                        
+                        <li>
+                            <strong>Feature Analysis (2-3 pages)</strong>
+                            <ul>
+                                <li>Feature importance ranking (include chart)</li>
+                                <li>Clinical interpretation of top features</li>
+                                <li>Surprising findings</li>
+                                <li>Features that didn't contribute much</li>
+                            </ul>
+                        </li>
+                        
+                        <li>
+                            <strong>Prediction Analysis (2-3 pages)</strong>
+                            <ul>
+                                <li>Prediction distribution (include charts)</li>
+                                <li>Cases where model performs well</li>
+                                <li>Cases where model struggles</li>
+                                <li>Error analysis (why false positives/negatives occur)</li>
+                            </ul>
+                        </li>
+                        
+                        <li>
+                            <strong>Discussion (2-3 pages)</strong>
+                            <ul>
+                                <li>Model strengths</li>
+                                <li>Model limitations</li>
+                                <li>Comparison with medical literature</li>
+                                <li>Real-world applicability</li>
+                                <li>Ethical considerations</li>
+                            </ul>
+                        </li>
+                        
+                        <li>
+                            <strong>Recommendations (1-2 pages)</strong>
+                            <ul>
+                                <li>Improvements for Sprint 3</li>
+                                <li>Additional features to collect</li>
+                                <li>Model optimization strategies</li>
+                                <li>Deployment considerations</li>
+                            </ul>
+                        </li>
+                        
+                        <li>
+                            <strong>Conclusion (1 page)</strong>
+                            <ul>
+                                <li>Summary of achievements</li>
+                                <li>Model readiness assessment</li>
+                                <li>Next steps</li>
+                            </ul>
+                        </li>
+                        
+                        <li>
+                            <strong>References & Appendices</strong>
+                            <ul>
+                                <li>Technical documentation referenced</li>
+                                <li>Additional charts and tables</li>
+                                <li>Code snippets (key sections)</li>
+                            </ul>
+                        </li>
+                    </ol>
+                    
+                    <div class="highlight">
+                        <strong>💡 Writing Tips:</strong>
+                        <ul>
+                            <li>Use clear, professional language</li>
+                            <li>Include ALL visualizations from your analysis</li>
+                            <li>Explain technical terms in plain English</li>
+                            <li>Provide clinical context for findings</li>
+                            <li>Be honest about limitations</li>
+                            <li>Make recommendations specific and actionable</li>
+                            <li>Use headers, bullet points, and white space</li>
+                            <li>Proofread multiple times</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <h3>Week 4 Deliverables</h3>
+                <div class="success">
+                    <strong>✅ Week 4 Outputs:</strong>
+                    <ul>
+                        <li><code>AI_&lt;TeamName&gt;_ModelDevCode.py</code> - Complete Week 3 & 4 Python script</li>
+                        <li><code>AI_&lt;TeamName&gt;_ModelMetrics.xlsx</code> - All performance metrics</li>
+                        <li><code>AI_&lt;TeamName&gt;_FeatureImportance.xlsx</code> - Feature rankings</li>
+                        <li><code>AI_&lt;TeamName&gt;_Predictions.xlsx</code> - All predictions with probabilities</li>
+                        <li><code>AI_&lt;TeamName&gt;_ConfusionMatrix.png</code> - Confusion matrix visualization</li>
+                        <li><code>AI_&lt;TeamName&gt;_FeatureImportance.png</code> - Feature importance chart</li>
+                        <li><code>AI_&lt;TeamName&gt;_ROC_Curve.png</code> - ROC curve</li>
+                        <li><code>AI_&lt;TeamName&gt;_CompleteAnalysis.png</code> - 4-panel analysis</li>
+                        <li><code>AI_&lt;TeamName&gt;_TrainedModel.pkl</code> - Saved model</li>
+                        <li><code>AI_&lt;TeamName&gt;_PredictionReport.zip</code> - All charts and data</li>
+                        <li><code>AI_&lt;TeamName&gt;_PredictionReport.docx</code> - Written analysis (15-20 pages)</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <!-- DELIVERABLES SECTION -->
+            <section id="deliverables">
+                <h2>📦 Complete Sprint 2 Deliverables Checklist</h2>
+                
+                <div class="card-grid">
+                    <div class="card">
+                        <h3>💻 1. Python Code</h3>
+                        <p><strong>File:</strong> <code>AI_&lt;TeamName&gt;_ModelDevCode.py</code></p>
+                        <p><strong>Must Include:</strong></p>
+                        <ul>
+                            <li>✓ Week 3: Feature engineering code</li>
+                            <li>✓ Week 3: Train-test split</li>
+                            <li>✓ Week 4: Model training</li>
+                            <li>✓ Week 4: Metrics calculation</li>
+                            <li>✓ Week 4: Visualization generation</li>
+                            <li>✓ Comments throughout</li>
+                            <li>✓ Runs without errors</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>📊 2. Processed Dataset</h3>
+                        <p><strong>File:</strong> <code>AI_&lt;TeamName&gt;_ProcessedDataset.xlsx</code></p>
+                        <p><strong>Must Include:</strong></p>
+                        <ul>
+                            <li>✓ All scaled numerical features</li>
+                            <li>✓ All encoded categorical features</li>
+                            <li>✓ All engineered features</li>
+                            <li>✓ Target variable (Cancer)</li>
+                            <li>✓ ~950-980 total records</li>
+                            <li>✓ No missing values</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>📈 3. Model Metrics</h3>
+                        <p><strong>File:</strong> <code>AI_&lt;TeamName&gt;_ModelMetrics.xlsx</code></p>
+                        <p><strong>Must Include:</strong></p>
+                        <ul>
+                            <li>✓ Accuracy (train & test)</li>
+                            <li>✓ Precision (train & test)</li>
+                            <li>✓ Recall (train & test)</li>
+                            <li>✓ F1-Score (train & test)</li>
+                            <li>✓ AUC Score</li>
+                            <li>✓ Confusion matrix values (TP, TN, FP, FN)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>📦 4. Prediction Report ZIP</h3>
+                        <p><strong>File:</strong> <code>AI_&lt;TeamName&gt;_PredictionReport.zip</code></p>
+                        <p><strong>Must Include:</strong></p>
+                        <ul>
+                            <li>✓ Confusion matrix PNG</li>
+                            <li>✓ Feature importance PNG</li>
+                            <li>✓ ROC curve PNG</li>
+                            <li>✓ Complete analysis PNG</li>
+                            <li>✓ Predictions Excel file</li>
+                            <li>✓ Model metrics Excel file</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>📄 5. Word Report</h3>
+                        <p><strong>File:</strong> <code>AI_&lt;TeamName&gt;_PredictionReport.docx</code></p>
+                        <p><strong>Must Include:</strong></p>
+                        <ul>
+                            <li>✓ Executive summary</li>
+                            <li>✓ Methodology description</li>
+                            <li>✓ Performance analysis</li>
+                            <li>✓ Feature interpretation</li>
+                            <li>✓ All visualizations embedded</li>
+                            <li>✓ Recommendations</li>
+                            <li>✓ 15-20 pages total</li>
+                            <li>✓ Professional formatting</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>📋 6. Updated Documentation</h3>
+                        <p><strong>File:</strong> <code>AI_&lt;TeamName&gt;_Sprint2Documentation.pdf</code></p>
+                        <p><strong>Must Include:</strong></p>
+                        <ul>
+                            <li>✓ Sprint 2 activities summary</li>
+                            <li>✓ Challenges encountered</li>
+                            <li>✓ Solutions implemented</li>
+                            <li>✓ Lessons learned</li>
+                            <li>✓ Team contributions</li>
+                            <li>✓ Sprint 3 preparation notes</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="important">
+                    <h3>⚠️ Final Submission Checklist</h3>
+                    <p><strong>Before submitting, verify:</strong></p>
+                    <ul>
+                        <li>☐ All files properly named with correct team name</li>
+                        <li>☐ Python code runs without errors from start to finish</li>
+                        <li>☐ Model achieves >70% test accuracy (or well-justified if lower)</li>
+                        <li>☐ Train-test accuracy difference <10% (no severe overfitting)</li>
+                        <li>☐ All 8+ visualizations are clear, labeled, and high-resolution (300 DPI)</li>
+                        <li>☐
+
+                        <li>
+                            <strong>Model Performance (4-5 pages)</strong>
+                            <ul>
+                                <li>All metrics with explanations</li>
+                                <li>Confusion matrix analysis (include image)</li>
+                                <li>ROC curve interpretation (include image)</li>
+                                <li>Overfitting assessment</li>
+                                <li>Comparison: train vs test performance</li>
+                            </ul>
+                        </li>
+                        
+                        <li>
+                            <strong>Feature Analysis (2-3 pages)</strong>
+                            <ul>
+                                <li>Feature importance ranking (include chart)</li>
+                                <li>Clinical interpretation of top features</li>
+                                <li>Surprising findings</li>
+                                <li>Features that didn't contribute much</li>
+                            </ul>
+                        </li>
+                        
+                        <li>
+                            <strong>Prediction Analysis (2-3 pages)</strong>
+                            <ul>
+                                <li>Prediction distribution (include charts)</li>
+                                <li>Cases where model performs well</li>
+                                <li>Cases where model struggles</li>
+                                <li>Error analysis (why false positives/negatives occur)</li>
+                            </ul>
+                        </li>
+                        
+                        <li>
+                            <strong>Discussion (2-3 pages)</strong>
+                            <ul>
+                                <li>Model strengths</li>
+                                <li>Model limitations</li>
+                                <li>Comparison with medical literature</li>
+                                <li>Real-world applicability</li>
+                                <li>Ethical considerations</li>
+                            </ul>
+                        </li>
+                        
+                        <li>
+                            <strong>Recommendations (1-2 pages)</strong>
+                            <ul>
+                                <li>Improvements for Sprint 3</li>
+                                <li>Additional features to collect</li>
+                                <li>Model optimization strategies</li>
+                                <li>Deployment considerations</li>
+                            </ul>
+                        </li>
+                        
+                        <li>
+                            <strong>Conclusion (1 page)</strong>
+                            <ul>
+                                <li>Summary of achievements</li>
+                                <li>Model readiness assessment</li>
+                                <li>Next steps</li>
+                            </ul>
+                        </li>
+                        
+                        <li>
+                            <strong>References & Appendices</strong>
+                            <ul>
+                                <li>Technical documentation referenced</li>
+                                <li>Additional charts and tables</li>
+                                <li>Code snippets (key sections)</li>
+                            </ul>
+                        </li>
+                    </ol>
+                    
+                    <div class="highlight">
+                        <strong>💡 Writing Tips:</strong>
+                        <ul>
+                            <li>Use clear, professional language</li>
+                            <li>Include ALL visualizations from your analysis</li>
+                            <li>Explain technical terms in plain English</li>
+                            <li>Provide clinical context for findings</li>
+                            <li>Be honest about limitations</li>
+                            <li>Make recommendations specific and actionable</li>
+                            <li>Use headers, bullet points, and white space</li>
+                            <li>Proofread multiple times</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <h3>Week 4 Deliverables</h3>
+                <div class="success">
+                    <strong>✅ Week 4 Outputs:</strong>
+                    <ul>
+                        <li><code>AI_&lt;TeamName&gt;_ModelDevCode.py</code> - Complete Week 3 & 4 Python script</li>
+                        <li><code>AI_&lt;TeamName&gt;_ModelMetrics.xlsx</code> - All performance metrics</li>
+                        <li><code>AI_&lt;TeamName&gt;_FeatureImportance.xlsx</code> - Feature rankings</li>
+                        <li><code>AI_&lt;TeamName&gt;_Predictions.xlsx</code> - All predictions with probabilities</li>
+                        <li><code>AI_&lt;TeamName&gt;_ConfusionMatrix.png</code> - Confusion matrix visualization</li>
+                        <li><code>AI_&lt;TeamName&gt;_FeatureImportance.png</code> - Feature importance chart</li>
+                        <li><code>AI_&lt;TeamName&gt;_ROC_Curve.png</code> - ROC curve</li>
+                        <li><code>AI_&lt;TeamName&gt;_CompleteAnalysis.png</code> - 4-panel analysis</li>
+                        <li><code>AI_&lt;TeamName&gt;_TrainedModel.pkl</code> - Saved model</li>
+                        <li><code>AI_&lt;TeamName&gt;_PredictionReport.zip</code> - All charts and data</li>
+                        <li><code>AI_&lt;TeamName&gt;_PredictionReport.docx</code> - Written analysis (15-20 pages)</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <!-- SPRINT 2 QUIZ SECTION -->
+            <section id="quiz">
+                <h2>📝 Sprint 2 Knowledge Check Quiz</h2>
+                
+                <div class="info">
+                    <strong>Test Your Understanding!</strong>
+                    <p>Answer these questions to verify you've mastered the Sprint 2 concepts. Review the relevant sections if you're unsure about any answers.</p>
+                </div>
+                
+                <h3>Algorithm Selection Scenarios</h3>
+                
+                <div class="card">
+                    <h4>Question 1: Best Algorithm for Interpretability</h4>
+                    <p>A hospital administrator needs to understand exactly WHY the model predicts cancer for each patient. Which algorithm would you recommend?</p>
+                    <ul>
+                        <li>A) Random Forest</li>
+                        <li>B) Support Vector Machine</li>
+                        <li>C) Decision Tree or Logistic Regression</li>
+                        <li>D) XGBoost</li>
+                    </ul>
+                    <div class="highlight" style="margin-top: 1rem;">
+                        <strong>Answer:</strong> C) Decision Tree or Logistic Regression - Both provide clear explanations. Decision Trees show the exact decision path, while Logistic Regression provides interpretable coefficients (odds ratios).
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h4>Question 2: Handling Imbalanced Data</h4>
+                    <p>Your cancer dataset has 90% healthy patients and only 10% cancer cases. Which approach is MOST important?</p>
+                    <ul>
+                        <li>A) Use accuracy as the primary metric</li>
+                        <li>B) Use stratified sampling and focus on Recall/Precision</li>
+                        <li>C) Remove some healthy patients to balance the data</li>
+                        <li>D) Use a simple Decision Tree without any modifications</li>
+                    </ul>
+                    <div class="highlight" style="margin-top: 1rem;">
+                        <strong>Answer:</strong> B) Use stratified sampling and focus on Recall/Precision - Accuracy can be misleading with imbalanced data (a model predicting "healthy" for everyone would be 90% accurate!). Stratified sampling ensures proper class distribution in train/test sets.
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h4>Question 3: Algorithm Speed vs Accuracy</h4>
+                    <p>You need to deploy a model that makes predictions in real-time (milliseconds). Training time is not a concern. Which algorithm is LEAST suitable?</p>
+                    <ul>
+                        <li>A) Logistic Regression</li>
+                        <li>B) Naive Bayes</li>
+                        <li>C) K-Nearest Neighbors (KNN)</li>
+                        <li>D) Decision Tree</li>
+                    </ul>
+                    <div class="highlight" style="margin-top: 1rem;">
+                        <strong>Answer:</strong> C) K-Nearest Neighbors (KNN) - KNN is slow at prediction time because it must calculate distances to ALL training points for each new prediction. The other algorithms make predictions almost instantly.
+                    </div>
+                </div>
+                
+                <h3>Metric Interpretation Questions</h3>
+                
+                <div class="card">
+                    <h4>Question 4: Understanding Recall</h4>
+                    <p>Your model has Recall = 95% and Precision = 60%. What does this mean clinically?</p>
+                    <ul>
+                        <li>A) The model misses 95% of cancer cases</li>
+                        <li>B) The model catches 95% of cancer cases but has many false alarms</li>
+                        <li>C) The model is 95% accurate overall</li>
+                        <li>D) 95% of predictions are correct</li>
+                    </ul>
+                    <div class="highlight" style="margin-top: 1rem;">
+                        <strong>Answer:</strong> B) The model catches 95% of cancer cases but has many false alarms - High recall (95%) means we catch most cancers. Lower precision (60%) means 40% of positive predictions are false alarms. This is often acceptable for screening.
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h4>Question 5: Confusion Matrix Analysis</h4>
+                    <p>Given: TP=45, TN=120, FP=30, FN=5. Calculate the Recall and explain its clinical significance.</p>
+                    <div class="highlight" style="margin-top: 1rem;">
+                        <strong>Answer:</strong> Recall = TP/(TP+FN) = 45/(45+5) = 90%
+                        <p><strong>Clinical Significance:</strong> The model correctly identifies 90% of actual cancer cases. Only 5 patients with cancer were missed (false negatives). This is good for screening, but those 5 missed cases are concerning and may need threshold adjustment.</p>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h4>Question 6: ROC-AUC Interpretation</h4>
+                    <p>Model A has AUC = 0.92, Model B has AUC = 0.75. What does this tell you?</p>
+                    <ul>
+                        <li>A) Model A is 92% accurate</li>
+                        <li>B) Model A is better at distinguishing cancer from non-cancer across all thresholds</li>
+                        <li>C) Model B should always be preferred for simplicity</li>
+                        <li>D) AUC doesn't matter for medical applications</li>
+                    </ul>
+                    <div class="highlight" style="margin-top: 1rem;">
+                        <strong>Answer:</strong> B) Model A is better at distinguishing cancer from non-cancer across all thresholds - AUC measures the model's ability to rank positive cases higher than negative cases. Higher AUC = better discrimination ability.
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h4>Question 7: Overfitting Detection</h4>
+                    <p>Your model shows: Training Accuracy = 98%, Test Accuracy = 72%. What's happening and how do you fix it?</p>
+                    <div class="highlight" style="margin-top: 1rem;">
+                        <strong>Answer:</strong> This is <strong>overfitting</strong> - the model memorized training data but doesn't generalize.
+                        <p><strong>Fixes:</strong></p>
+                        <ul>
+                            <li>Reduce model complexity (fewer trees, shallower depth)</li>
+                            <li>Add regularization</li>
+                            <li>Get more training data</li>
+                            <li>Use cross-validation to tune hyperparameters</li>
+                            <li>Remove noisy or irrelevant features</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h4>Question 8: Cross-Validation Purpose</h4>
+                    <p>Why do we use Stratified K-Fold instead of regular K-Fold for cancer prediction?</p>
+                    <div class="highlight" style="margin-top: 1rem;">
+                        <strong>Answer:</strong> Stratified K-Fold ensures each fold has the same proportion of cancer cases as the original dataset. With imbalanced data (e.g., 30% cancer), regular K-Fold might create folds with very different class distributions, leading to unreliable performance estimates.
+                    </div>
+                </div>
+                
+                <h3>Code Completion Exercises</h3>
+                
+                <div class="card">
+                    <h4>Question 9: Complete the Code</h4>
+                    <p>Fill in the blanks to properly split data and train a Random Forest model:</p>
+                    <pre><code># Split data with stratification
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y,
+    test_size=____,      # 20% for testing
+    random_state=42,
+    stratify=____        # Maintain class distribution
+)
+
+# Initialize Random Forest
+rf_model = RandomForestClassifier(
+    n_estimators=____,   # Number of trees
+    max_depth=____,      # Prevent overfitting
+    random_state=42
+)
+
+# Train the model
+rf_model.____(X_train, y_train)</code></pre>
+                    <div class="highlight" style="margin-top: 1rem;">
+                        <strong>Answer:</strong>
+                        <ul>
+                            <li>test_size=<strong>0.2</strong></li>
+                            <li>stratify=<strong>y</strong></li>
+                            <li>n_estimators=<strong>100</strong></li>
+                            <li>max_depth=<strong>10</strong></li>
+                            <li>rf_model.<strong>fit</strong>(X_train, y_train)</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h4>Question 10: Data Leakage Prevention</h4>
+                    <p>What's wrong with this code?</p>
+                    <pre><code># Feature scaling
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)  # Scale all data
+
+# Then split
+X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2)</code></pre>
+                    <div class="highlight" style="margin-top: 1rem;">
+                        <strong>Answer:</strong> This causes <strong>data leakage</strong>! The scaler is fit on ALL data (including test data), so test data statistics influence the transformation.
+                        <p><strong>Correct approach:</strong></p>
+                        <pre><code># Split FIRST
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+# Then scale (fit only on training data)
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)  # Only transform, no fit!</code></pre>
+                    </div>
+                </div>
+                
+                <div class="success">
+                    <h3>🎉 Quiz Complete!</h3>
+                    <p>If you answered most questions correctly, you're ready for Sprint 3! If you struggled with any topics, review the relevant sections before proceeding.</p>
+                    <p><strong>Key concepts to master:</strong></p>
+                    <ul>
+                        <li>✓ Algorithm selection based on requirements</li>
+                        <li>✓ Metric interpretation (especially Recall for medical applications)</li>
+                        <li>✓ Overfitting detection and prevention</li>
+                        <li>✓ Cross-validation techniques</li>
+                        <li>✓ Data leakage prevention</li>
+                    </ul>
+                </div>
+            </section>
+            
+        </div>
+        
+        <footer style="background: #2c3e50; color: white; padding: 2rem; text-align: center;">
+            <p><strong>XPro AI Cancer Prediction Project</strong></p>
+            <p>Sprint 2: Model Development & Evaluation</p>
+            <p style="margin-top: 1rem; opacity: 0.8;">© 2026 Apps Emplife - Classical ML Curriculum</p>
+            <div style="margin-top: 1rem;">
+                <a href="index.html" style="color: #ffc107; margin: 0 1rem;">← Curriculum Home</a>
+                <a href="spirint1.html" style="color: #ffc107; margin: 0 1rem;">← Sprint 1</a>
+                <a href="Sprint3.html" style="color: #ffc107; margin: 0 1rem;">Sprint 3 →</a>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>
